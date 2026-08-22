@@ -24,10 +24,10 @@
       <label>
         <span>ACTIVE IDENTITY</span>
         <select data-role-picker-select aria-label="Select active prototype identity" disabled>
-          <option value="">AWAITING USER DATA</option>
+          <option value="">IDENTITY BACKEND PENDING</option>
         </select>
       </label>
-      <small data-role-picker-state aria-live="polite">IDENTITY REQUIRED</small>
+      <small data-role-picker-state aria-live="polite">A3/A4 IDENTITY DEFERRED</small>
     </div>
     <span class="nav-status" role="status"></span>
   </header>
@@ -60,7 +60,7 @@
           <button type="button" data-demo-command="escalate" disabled>DEMO ESCALATE</button>
           <button type="button" data-demo-command="resolve" disabled>DEMO RESOLVE</button>
         </div>
-        <span data-demo-status role="status" aria-live="polite">SELECT ADMIN IDENTITY</span>
+        <span data-demo-status role="status" aria-live="polite">DEMO BACKEND PENDING</span>
       </section>
 
       <section class="asset-section console-bay" aria-labelledby="asset-instruments-title" data-ui-state="loading">
@@ -125,21 +125,21 @@
       </section>
 
       <section class="command-tertiary-grid" aria-label="Activity and Inspector Queue">
-        <section class="alerts activity-panel panel console-bay" aria-labelledby="alerts-title" data-ui-state="empty" data-activity-state="contract">
-          <div class="panel-head"><div><span>OPERATIONAL EVENT RECORDER</span><h2 id="alerts-title">RECENT ACTIVITY</h2></div><span data-activity-status role="status" aria-live="polite">AWAITING ALERT SOURCE</span></div>
+        <section class="alerts activity-panel panel console-bay" aria-labelledby="alerts-title" data-ui-state="empty" data-activity-state="backend">
+          <div class="panel-head"><div><span>OPERATIONAL EVENT RECORDER</span><h2 id="alerts-title">RECENT ACTIVITY</h2></div><span data-activity-status role="status" aria-live="polite">AUDIT BACKEND PENDING</span></div>
           <div class="activity-recorder">
             <div class="activity-columns" aria-hidden="true"><span>TIME</span><span>ASSET</span><span>EVENT / STATE</span></div>
             <ol class="activity-list" data-activity-list aria-label="Recent operational activity">
-              <li class="activity-state"><div class="technical-state compact"><i aria-hidden="true"></i><strong>AWAITING ALERT INTEGRATION</strong><small>NO AUTHORITATIVE ALERT SOURCE CONFIRMED</small></div></li>
+              <li class="activity-state"><div class="technical-state compact"><i aria-hidden="true"></i><strong>AUDIT BACKEND PENDING</strong><small>A2 DOES NOT INITIALIZE GET /api/audit</small></div></li>
             </ol>
           </div>
         </section>
-        <section class="inspector-queue panel console-bay" aria-labelledby="inspector-queue-title" data-ui-state="empty" data-queue-state="selection">
-          <div class="panel-head"><div><span>ROLE-SPECIFIC WORK REGISTER</span><h2 id="inspector-queue-title">INSPECTOR QUEUE</h2></div><span data-assignments-state role="status" aria-live="polite">SELECT INSPECTOR IDENTITY</span></div>
+        <section class="inspector-queue panel console-bay" aria-labelledby="inspector-queue-title" data-ui-state="empty" data-queue-state="backend">
+          <div class="panel-head"><div><span>ROLE-SPECIFIC WORK REGISTER</span><h2 id="inspector-queue-title">INSPECTOR QUEUE</h2></div><span data-assignments-state role="status" aria-live="polite">ASSIGNMENT BACKEND PENDING</span></div>
           <div class="queue-register" data-inspector-queue>
             <div class="queue-columns" aria-hidden="true"><span>ASSET</span><span>ASSIGNMENT / STATUS</span></div>
             <ol class="queue-list" data-assignment-list aria-label="Inspector assignments">
-              <li class="queue-state"><div class="technical-state compact"><i aria-hidden="true"></i><strong>SELECT INSPECTOR IDENTITY</strong><small>QUEUE USES THE ACTIVE BACKEND-PROVIDED ROLE</small></div></li>
+              <li class="queue-state"><div class="technical-state compact"><i aria-hidden="true"></i><strong>ASSIGNMENT BACKEND PENDING</strong><small>A2 DOES NOT INITIALIZE GET /api/assignments</small></div></li>
             </ol>
           </div>
         </section>

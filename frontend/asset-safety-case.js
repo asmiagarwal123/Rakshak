@@ -1,5 +1,5 @@
 (function initializeSafetyCase() {
-  const POLL_MS = 1000;
+  const POLL_MS = window.RakshakRuntime.pollIntervalMs;
   const ROLE_PERMISSIONS = Object.freeze({
     operator: Object.freeze(['ACK', 'ASSIGN']),
     inspector: Object.freeze(['ACK', 'DISMISS', 'RESOLVE']),
@@ -13,6 +13,8 @@
     health: null,
     asset: null,
     risk: null,
+    telemetry: null,
+    telemetryHistory: [],
     lastGoodAt: null,
     requestVersion: 0,
     refreshPromise: null,
@@ -336,7 +338,7 @@
     setText('[data-summary-score]', score);
     setText('[data-summary-level]', level);
     setText('[data-gauge-level]', level, 'UNRESOLVED');
-    setText('[data-priority]', risk?.priority);
+    setText('[data-priority]', risk?.priority_score);
     setText('[data-risk-state]', scoreAvailable ? 'ASSESSMENT LINKED' : 'RISK DATA EMPTY');
     setText('[data-asset-level]', level, 'UNRESOLVED');
     setText('[data-gauge-description]', scoreAvailable ? `Prototype risk index ${score} out of 100. Backend level ${display(level, 'unresolved')}.` : 'Risk score unresolved.');
@@ -390,15 +392,16 @@
     setSectionState('telemetry', 'loaded');
   }
 
-  function renderTrend(trend) {
-    const available = trend && typeof trend === 'object' && Object.values(trend).some(hasValue);
+  function renderTrend(riskPayload) {
+    const available = ['trend', 'temp_delta_5_c', 'velocity_score', 'trend_points']
+      .some((field) => hasValue(riskPayload?.[field]));
     setText('[data-trend-state]', available ? 'BACKEND TREND LINKED' : 'NO TREND RETURNED');
-    setText('[data-trend-value]', trend?.state);
-    setText('[data-temp-delta]', trend?.temp_delta_5_c);
-    setText('[data-velocity]', trend?.velocity_score);
-    setText('[data-trend-points]', Array.isArray(trend?.trend_points) ? formatList(trend.trend_points) : trend?.trend_points);
+    setText('[data-trend-value]', riskPayload?.trend);
+    setText('[data-temp-delta]', riskPayload?.temp_delta_5_c);
+    setText('[data-velocity]', riskPayload?.velocity_score);
+    setText('[data-trend-points]', Array.isArray(riskPayload?.trend_points) ? formatList(riskPayload.trend_points) : riskPayload?.trend_points);
     const vector = $('[data-trend-vector]');
-    if (vector) vector.dataset.direction = normalizedLevel(trend?.state);
+    if (vector) vector.dataset.direction = normalizedLevel(riskPayload?.trend);
     setSectionState('trend', available ? 'loaded' : 'empty');
   }
 
@@ -410,7 +413,7 @@
     const identity = document.createElement('div');
     const name = document.createElement('strong');
     const source = document.createElement('small');
-    name.textContent = display(factor?.name, 'UNNAMED FACTOR');
+    name.textContent = display(factor?.factor, 'UNNAMED FACTOR');
     source.textContent = `SOURCE / ${display(factor?.source, 'NOT RETURNED')}`;
     identity.append(name, source);
 
@@ -554,10 +557,13 @@
 
   function renderRiskObject(payload) {
     const master = payload && typeof payload === 'object' ? payload : {};
-    const risk = master.risk || {};
+    const risk = {
+      score: master.risk_score,
+      level: master.risk_level,
+      priority_score: master.priority_score,
+    };
     renderGauge(risk);
-    renderTelemetry(master.telemetry);
-    renderTrend(master.trend);
+    renderTrend(master);
     renderFactors(master.factors, risk.score);
     renderExplanation(master.explanation, master.data_warnings);
     renderConfidence(master.confidence_detail);
@@ -572,17 +578,10 @@
     setCaseStatus('CONNECTING TO SAFETY INTELLIGENCE', 'REQUESTING MASTER RISK OBJECT');
   }
 
-  function markIdentityRequired() {
-    document.body.dataset.caseState = 'identity';
-    setText('[data-risk-state]', 'SELECT A VALID USER');
-    setText('[data-telemetry-state]', 'IDENTITY REQUIRED');
-    setCaseStatus('SELECT A VALID USER', 'RETURN TO COMMAND CENTER TO CHOOSE A BACKEND IDENTITY');
-  }
-
   function markError(error) {
     document.body.dataset.caseState = state.risk ? 'stale' : 'error';
     if (state.risk) {
-      renderTelemetry(state.risk.telemetry);
+      renderTelemetry(state.telemetry || state.risk.telemetry);
       setText('[data-telemetry-state]', 'LAST-KNOWN-GOOD / FEED UNAVAILABLE');
       setText('[data-stale-detail]', 'BACKEND REQUEST FAILED / READING RETAINED');
       setSectionState('telemetry', 'stale');
@@ -594,45 +593,81 @@
     setText('[data-telemetry-state]', 'DATA UNAVAILABLE');
     setText('[data-factor-state]', 'DATA UNAVAILABLE');
     setText('[data-recommendation-state]', 'DATA UNAVAILABLE');
-    if (error?.status === 401) setCaseStatus('SELECT A VALID USER', 'BACKEND RETURNED 401 / IDENTITY MISSING OR UNKNOWN');
-    else if (error?.status === 403) setCaseStatus('INSUFFICIENT BACKEND PERMISSION', 'BACKEND RETURNED 403 / REQUEST NOT EXECUTED');
-    else setCaseStatus('SAFETY CASE DATA UNAVAILABLE', error?.status ? `API STATUS ${error.status}` : 'BACKEND REQUEST FAILED');
+    setCaseStatus('SAFETY CASE DATA UNAVAILABLE', error?.status ? `API STATUS ${error.status}` : 'BACKEND REQUEST FAILED');
   }
 
   async function performRefresh() {
     const version = ++state.requestVersion;
     markLoading();
-    if (!state.identityVerified || !selectedUser()) {
-      markIdentityRequired();
+    const [healthResult, assetResult, riskResult, telemetryResult] = await Promise.allSettled([
+      window.RakshakAPI.loadHealth(),
+      window.RakshakAPI.loadAsset(selectedAssetId),
+      window.RakshakAPI.loadRisk(selectedAssetId),
+      window.RakshakAPI.loadTelemetry(selectedAssetId, 24),
+    ]);
+    if (version !== state.requestVersion) return;
+
+    if (healthResult.status === 'fulfilled') state.health = healthResult.value;
+
+    if (assetResult.status === 'fulfilled') {
+      state.asset = assetResult.value;
+      renderAsset(state.asset);
+    } else if (!state.asset) renderAsset({ id: selectedAssetId });
+
+    let currentTelemetry = state.telemetry;
+    if (telemetryResult.status === 'fulfilled') {
+      const payload = telemetryResult.value;
+      const records = Array.isArray(payload) ? payload : Array.isArray(payload?.telemetry) ? payload.telemetry : [];
+      state.telemetryHistory = records;
+      state.telemetry = records.length ? records.at(-1) : null;
+      currentTelemetry = state.telemetry;
+    }
+
+    if (riskResult.status === 'fulfilled') {
+      state.risk = riskResult.value;
+      renderRiskObject(state.risk);
+    } else if (state.risk) {
+      renderRiskObject(state.risk);
+      setText('[data-risk-state]', 'LAST-KNOWN-GOOD ASSESSMENT');
+      setSectionState('risk', 'stale');
+    } else {
+      setText('[data-risk-state]', 'RISK DATA UNAVAILABLE');
+      setSectionState('risk', 'error');
+    }
+
+    if (telemetryResult.status === 'fulfilled') {
+      renderTelemetry(currentTelemetry);
+    } else if (currentTelemetry) {
+      renderTelemetry(currentTelemetry);
+      setText('[data-telemetry-state]', 'LAST-KNOWN-GOOD / FEED UNAVAILABLE');
+      setText('[data-stale-detail]', 'TELEMETRY REQUEST FAILED / READING RETAINED');
+      setSectionState('telemetry', 'stale');
+    } else if (state.risk?.telemetry) {
+      renderTelemetry(state.risk.telemetry);
+      setText('[data-telemetry-state]', 'RISK SNAPSHOT / HISTORY UNAVAILABLE');
+      setText('[data-stale-detail]', 'TELEMETRY HISTORY REQUEST FAILED');
+      setSectionState('telemetry', 'stale');
+    } else {
+      renderTelemetry(null);
+      setText('[data-telemetry-state]', 'TELEMETRY DATA UNAVAILABLE');
+      setSectionState('telemetry', 'error');
+    }
+
+    const publicDataLinked = [assetResult, riskResult, telemetryResult].some((result) => result.status === 'fulfilled');
+    if (!publicDataLinked) {
+      markError(riskResult.reason || telemetryResult.reason || assetResult.reason);
       return;
     }
-    try {
-      const metadataNeeded = !state.asset || !state.assets.length;
-      const [healthResult, riskResult, assetsResult] = await Promise.allSettled([
-        window.RakshakAPI.loadHealth(),
-        window.RakshakAPI.loadRisk(selectedAssetId),
-        metadataNeeded ? window.RakshakAPI.loadAssets() : Promise.resolve(state.assets),
-      ]);
-      if (version !== state.requestVersion) return;
-      if (riskResult.status === 'rejected') throw riskResult.reason;
-      const health = healthResult.status === 'fulfilled' ? healthResult.value : null;
-      const riskPayload = riskResult.value;
-      const assetsPayload = assetsResult.status === 'fulfilled' ? assetsResult.value : state.assets;
-      const assets = Array.isArray(assetsPayload) ? assetsPayload : Array.isArray(assetsPayload?.assets) ? assetsPayload.assets : [];
-      const listAsset = assets.find((asset) => String(asset?.id) === String(selectedAssetId));
-      state.health = health;
-      state.assets = assets;
-      state.asset = listAsset || state.asset || null;
-      state.risk = riskPayload;
-      state.lastGoodAt = new Date();
-      renderAsset(state.asset || { id: riskPayload?.asset_id });
-      renderRiskObject(riskPayload);
-      document.body.dataset.caseState = telemetryIsStale() ? 'stale' : 'loaded';
-      const systemState = !state.health ? 'ASSESSMENT LINKED / HEALTH STATE UNAVAILABLE' : telemetryIsStale() ? 'ASSESSMENT LINKED / TELEMETRY STALE' : 'SAFETY INTELLIGENCE LINKED';
-      setCaseStatus(systemState, `UPDATED ${state.lastGoodAt.toLocaleTimeString()}`);
-    } catch (error) {
-      if (version === state.requestVersion) markError(error);
-    }
+    state.lastGoodAt = new Date();
+    document.body.dataset.caseState = telemetryIsStale() ? 'stale' : riskResult.status === 'fulfilled' ? 'loaded' : 'partial';
+    const systemState = riskResult.status !== 'fulfilled'
+      ? 'SAFETY CASE PARTIALLY LINKED'
+      : !state.health
+        ? 'ASSESSMENT LINKED / HEALTH STATE UNAVAILABLE'
+        : telemetryIsStale()
+          ? 'ASSESSMENT LINKED / TELEMETRY STALE'
+          : 'SAFETY INTELLIGENCE LINKED';
+    setCaseStatus(systemState, `UPDATED ${state.lastGoodAt.toLocaleTimeString()}`);
   }
 
   function refresh() {
@@ -651,34 +686,50 @@
   }
 
   function handleIdentityChange() {
-    state.requestVersion += 1;
     state.actionVersion += 1;
     state.pendingActions.clear();
-    const current = selectedUser();
-    const verifiedUser = current ? state.users.find((user) => String(user.id) === String(current.id)) : null;
-    state.identityVerified = Boolean(verifiedUser && sameUser(current, verifiedUser));
-    state.risk = null;
-    state.health = null;
     clearActionForm();
+    deferFutureWorkflow();
+  }
+
+  function deferFutureWorkflow() {
+    state.identityVerified = false;
+    state.users = [];
+    setText('[data-active-user]', 'IDENTITY BACKEND PENDING');
+    setText('[data-active-role]', 'A3/A4 DEFERRED');
+    const badge = $('[data-identity-state]');
+    if (badge) {
+      badge.dataset.identityState = 'unverified';
+      badge.dataset.backendState = 'pending';
+    }
+    $$('[data-workflow-action]').forEach((button) => {
+      button.disabled = true;
+      const control = button.closest('[data-action-control]');
+      if (control) control.dataset.permission = 'disabled';
+      setText(`[data-action-reason="${button.dataset.workflowAction}"]`, 'A3/A4 BACKEND PENDING');
+    });
+    const assignee = $('[data-assignee]');
+    if (assignee) assignee.disabled = true;
+    clearActionForm();
+    setText('[data-action-panel-state]', 'ACTION BACKEND PENDING');
+    setText('[data-action-result]', 'NO HUMAN ACTION SUBMITTED / BACKEND PENDING');
+    setSectionState('actions', 'blocked');
+
+    const simulationButton = $('[data-simulate-intervention]');
+    if (simulationButton) simulationButton.disabled = true;
+    setText('[data-simulation-panel-state]', 'INTERVENTION BACKEND PENDING');
+    setText('[data-simulation-support]', 'A2 READ-ONLY SAFETY DATA REMAINS ACTIVE. INTERVENTION REQUESTS ARE DEFERRED.');
+    setSectionState('simulation', 'blocked');
     clearScenario();
-    setText('[data-action-result]', 'NO HUMAN ACTION SUBMITTED');
-    syncActionPermissions();
-    markLoading();
-    if (state.identityVerified) refresh();
-    else refreshWorkflowUsers().then(refresh);
   }
 
   initializeRoutes();
+  deferFutureWorkflow();
   if (!selectedAssetId) {
     showSelectionState();
     return;
   }
   showDossier();
-  initializeWorkflow();
-  clearScenario();
-  window.addEventListener('rakshak:identity-change', handleIdentityChange);
-  refreshWorkflowUsers().then(refresh);
-  window.setInterval(() => {
-    if (state.identityVerified && selectedUser()) refresh();
-  }, POLL_MS);
+  refresh();
+  window.setInterval(refresh, POLL_MS);
 }());

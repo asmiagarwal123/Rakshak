@@ -1,5 +1,12 @@
-const API_BASE = window.RAKSHAK_API_BASE || '';
+const API_BASE = window.RAKSHAK_API_BASE || 'http://14.14.1.229:8000';
 const ASSET_ID = window.RAKSHAK_ASSET_ID || null;
+const DEFAULT_A2_POLL_INTERVAL_MS = 3000;
+const configuredPollInterval = Number(window.RAKSHAK_POLL_INTERVAL_MS);
+const A2_POLL_INTERVAL_MS = Number.isFinite(configuredPollInterval)
+  && configuredPollInterval >= 2000
+  && configuredPollInterval <= 5000
+  ? configuredPollInterval
+  : DEFAULT_A2_POLL_INTERVAL_MS;
 const PUBLIC_REQUESTS = Object.freeze([
   Object.freeze({ method: 'GET', path: '/api/health' }),
   Object.freeze({ method: 'GET', path: '/api/users' }),
@@ -19,10 +26,17 @@ function readStoredIdentity() {
 
 const identityState = { selectedUser: readStoredIdentity(), listeners: new Set() };
 
+function isPublicApiRequest(method, path) {
+  if (PUBLIC_REQUESTS.some((entry) => entry.method === method && entry.path === path)) return true;
+  if (method !== 'GET') return false;
+  if (path === '/api/assets' || path === '/api/priorities') return true;
+  return /^\/api\/assets\/[^/]+(?:\/risk|\/telemetry)?$/.test(path);
+}
+
 async function request(path, options = {}) {
   const method = String(options.method || 'GET').toUpperCase();
   const requestPath = String(path).split('?')[0];
-  const isPublicRequest = PUBLIC_REQUESTS.some((entry) => entry.method === method && entry.path === requestPath);
+  const isPublicRequest = isPublicApiRequest(method, requestPath);
   const headers = new Headers(options.headers || {});
   headers.set('Accept', 'application/json');
 
@@ -63,24 +77,49 @@ window.RakshakIdentity = Object.freeze({
   getSelectedUserId: () => identityState.selectedUser?.id ?? null,
   setSelectedUser,
   subscribe(listener) {
-    if (typeof listener !== 'function') return () => {};
+    if (typeof listener !== 'function') return () => { };
     identityState.listeners.add(listener);
     return () => identityState.listeners.delete(listener);
   },
 });
 
 async function loadLandingData() {
-  const priorityRequest = request('/api/priorities');
-  if (!ASSET_ID) return { priorities: await priorityRequest };
-  const [assets, risk, telemetry, priorities] = await Promise.all([request('/api/assets'), request(`/api/assets/${encodeURIComponent(ASSET_ID)}/risk`), request(`/api/assets/${encodeURIComponent(ASSET_ID)}/telemetry?limit=5`), priorityRequest]);
-  const asset = Array.isArray(assets) ? assets.find((item) => item.id === ASSET_ID) : null;
-  return { asset, risk, telemetry, priorities };
+  const [assetsResult, prioritiesResult] = await Promise.allSettled([
+    request('/api/assets'),
+    request('/api/priorities'),
+  ]);
+  if (assetsResult.status === 'rejected' && prioritiesResult.status === 'rejected') throw assetsResult.reason;
+
+  const assets = assetsResult.status === 'fulfilled'
+    ? (Array.isArray(assetsResult.value) ? assetsResult.value : assetsResult.value?.assets || [])
+    : [];
+  const priorities = prioritiesResult.status === 'fulfilled'
+    ? (Array.isArray(prioritiesResult.value) ? prioritiesResult.value : prioritiesResult.value?.priorities || [])
+    : [];
+  const selectedAssetId = ASSET_ID || priorities[0]?.asset_id || assets[0]?.id || null;
+  const asset = selectedAssetId
+    ? assets.find((item) => String(item?.id) === String(selectedAssetId)) || null
+    : null;
+  if (!selectedAssetId) return { assets, priorities, asset: null, risk: null, telemetry: [] };
+
+  const [riskResult, telemetryResult] = await Promise.allSettled([
+    request(`/api/assets/${encodeURIComponent(selectedAssetId)}/risk`),
+    request(`/api/assets/${encodeURIComponent(selectedAssetId)}/telemetry?limit=24`),
+  ]);
+  return {
+    assets,
+    priorities,
+    asset,
+    risk: riskResult.status === 'fulfilled' ? riskResult.value : null,
+    telemetry: telemetryResult.status === 'fulfilled' ? telemetryResult.value : [],
+  };
 }
 
 async function simulateIntervention(assetId, payload) {
   return request(`/api/assets/${encodeURIComponent(assetId)}/simulate-intervention`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
 }
 
+window.RakshakRuntime = Object.freeze({ pollIntervalMs: A2_POLL_INTERVAL_MS });
 window.RakshakAPI = { loadLandingData, simulateIntervention };
 window.RakshakAPI.loadHealth = () => request('/api/health');
 window.RakshakAPI.loadAssets = () => request('/api/assets');

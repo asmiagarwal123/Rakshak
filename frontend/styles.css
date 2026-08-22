@@ -159,3 +159,65 @@ body:has(.landing-cinematic-bg) .intervention-concept .scenario-note{max-width:7
   body:has(.landing-cinematic-bg) .scenario-path{grid-template-columns:1fr;gap:9px;text-align:left}
   body:has(.landing-cinematic-bg) .scenario-path i{transform:rotate(90deg);justify-self:start}
 }
+
+/* Landing priority queue: keep every API-returned field inside its row. */
+body:has(.landing-cinematic-bg) .priority-queue{min-width:0;max-width:100%;overflow:hidden}
+body:has(.landing-cinematic-bg) .priority-queue-head{align-items:center;gap:18px;min-width:0}
+body:has(.landing-cinematic-bg) .priority-queue-head span{min-width:0}
+body:has(.landing-cinematic-bg) .priority-queue-head span:last-child{text-align:right}
+body:has(.landing-cinematic-bg) .priority-rows{min-width:0}
+body:has(.landing-cinematic-bg) .priority-rows[data-state="loaded"]{min-height:0}
+body:has(.landing-cinematic-bg) .priority-row{width:100%;min-width:0;grid-template-columns:minmax(44px,.34fr) minmax(170px,1.65fr) repeat(3,minmax(64px,.58fr)) minmax(82px,.78fr);gap:clamp(8px,1vw,14px);padding:12px clamp(14px,1.2vw,20px);overflow:hidden;will-change:auto}
+body:has(.landing-cinematic-bg) .priority-row>*{min-width:0}
+body:has(.landing-cinematic-bg) .priority-rank{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body:has(.landing-cinematic-bg) .priority-asset strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body:has(.landing-cinematic-bg) .priority-asset small,body:has(.landing-cinematic-bg) .priority-metric strong,body:has(.landing-cinematic-bg) .priority-trend strong{overflow-wrap:anywhere}
+body:has(.landing-cinematic-bg) .priority-label{white-space:nowrap}
+
+/* Long evidence identifiers must not widen the document and displace the queue below. */
+body:has(.landing-cinematic-bg) .evidence-workstation,body:has(.landing-cinematic-bg) .evidence-lower,body:has(.landing-cinematic-bg) .evidence-stack,body:has(.landing-cinematic-bg) .evidence-row,body:has(.landing-cinematic-bg) .evidence-row>*{min-width:0;max-width:100%}
+body:has(.landing-cinematic-bg) .evidence-factor strong,body:has(.landing-cinematic-bg) .evidence-source strong{overflow-wrap:anywhere;word-break:break-word}
+
+@media(max-width:1300px){
+  body:has(.landing-cinematic-bg) .prioritize{grid-template-columns:1fr;gap:42px;padding-left:6vw;padding-right:6vw}
+  body:has(.landing-cinematic-bg) .prioritize-copy{max-width:560px}
+  body:has(.landing-cinematic-bg) .priority-queue{width:100%}
+}
+@media(max-width:760px){
+  body:has(.landing-cinematic-bg) .priority-queue-head{align-items:flex-start;flex-direction:column;gap:7px}
+  body:has(.landing-cinematic-bg) .priority-queue-head span:last-child{text-align:left}
+  body:has(.landing-cinematic-bg) .priority-row{grid-template-columns:42px minmax(0,1fr) minmax(66px,.42fr);gap:10px;padding:14px}
+  body:has(.landing-cinematic-bg) .priority-metric--risk,body:has(.landing-cinematic-bg) .priority-metric--level,body:has(.landing-cinematic-bg) .priority-trend{display:none}
+}
+
+/* Urgent landing-only panel containment repair. */
+body:has(.landing-cinematic-bg) .prioritize,body:has(.landing-cinematic-bg) .explain{min-width:0;max-width:100%;overflow-x:clip}
+body:has(.landing-cinematic-bg) .priority-queue,body:has(.landing-cinematic-bg) .priority-rows{position:relative;min-width:0;width:100%;max-width:100%;overflow:hidden}
+body:has(.landing-cinematic-bg) .priority-rows{display:block;align-content:start}
+body:has(.landing-cinematic-bg) .priority-rows[data-state="loaded"]>.awaiting-data{display:none}
+body:has(.landing-cinematic-bg) .priority-row{position:relative!important;inset:auto!important;float:none!important;clear:both;max-width:100%;margin:0;align-items:center;transform:none!important}
+body:has(.landing-cinematic-bg) .priority-row:hover{transform:translateX(2px)!important}
+body:has(.landing-cinematic-bg) .priority-row>span,body:has(.landing-cinematic-bg) .priority-row>div{position:static!important;inset:auto!important;min-width:0;max-width:100%;margin:0;transform:none!important}
+body:has(.landing-cinematic-bg) .priority-asset strong{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body:has(.landing-cinematic-bg) .priority-asset small,body:has(.landing-cinematic-bg) .priority-metric strong,body:has(.landing-cinematic-bg) .priority-trend strong{display:block;max-width:100%;white-space:nowrap}
+
+body:has(.landing-cinematic-bg) .evidence-workstation,body:has(.landing-cinematic-bg) .evidence-lower,body:has(.landing-cinematic-bg) .evidence-stack,body:has(.landing-cinematic-bg) [data-explain-factors]{position:relative;min-width:0;width:100%;max-width:100%}
+body:has(.landing-cinematic-bg) .evidence-workstation,body:has(.landing-cinematic-bg) .evidence-stack{overflow:hidden}
+body:has(.landing-cinematic-bg) .evidence-row{position:relative!important;inset:auto!important;float:none!important;width:100%;max-width:100%;margin:0;align-items:start;transform:none!important}
+body:has(.landing-cinematic-bg) .evidence-row>div{position:static!important;inset:auto!important;min-width:0;max-width:100%;margin:0;transform:none!important}
+body:has(.landing-cinematic-bg) .evidence-source strong,body:has(.landing-cinematic-bg) .evidence-factor strong{max-width:100%;white-space:normal;overflow-wrap:anywhere;word-break:break-word}
+body:has(.landing-cinematic-bg) .evidence-contribution{min-width:0;text-align:right;justify-self:stretch}
+body:has(.landing-cinematic-bg) .evidence-contribution strong{max-width:100%;white-space:nowrap}
+
+@media(min-width:761px){
+  body:has(.landing-cinematic-bg) .priority-row{display:grid!important;grid-template-columns:minmax(52px,.34fr) minmax(220px,1.8fr) repeat(3,minmax(82px,.62fr)) minmax(105px,.82fr);gap:12px}
+  body:has(.landing-cinematic-bg) .evidence-lower{display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,.30fr)}
+  body:has(.landing-cinematic-bg) .evidence-row{display:grid!important;grid-template-columns:minmax(105px,.85fr) minmax(145px,1.2fr) minmax(78px,.48fr);gap:12px}
+}
+
+/* Keep backend factor contributions inside the landing-page assessment panel. */
+body:has(.landing-cinematic-bg) .factor-manifest,body:has(.landing-cinematic-bg) .factor-rows{min-width:0;max-width:100%;overflow:hidden}
+body:has(.landing-cinematic-bg) .factor-row{width:100%;min-width:0;max-width:100%;grid-template-columns:minmax(0,1.15fr) minmax(0,.9fr) minmax(38px,auto);gap:12px}
+body:has(.landing-cinematic-bg) .factor-row>*{min-width:0;max-width:100%}
+body:has(.landing-cinematic-bg) .factor-row>span,body:has(.landing-cinematic-bg) .factor-row>small{overflow-wrap:anywhere;word-break:break-word}
+body:has(.landing-cinematic-bg) .factor-row>strong{justify-self:end;white-space:nowrap}

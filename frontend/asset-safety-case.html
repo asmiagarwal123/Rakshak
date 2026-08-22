@@ -17,8 +17,8 @@
       <a data-route="plantMap">PLANT MAP <i>↗</i></a>
       <a data-route="auditHistory">AUDIT HISTORY <i>↗</i></a>
     </nav>
-    <a class="identity-badge" href="command-center.html" data-identity-state="unverified" aria-label="Manage active identity in Command Center">
-      <span>ACTIVE IDENTITY</span><strong data-active-user>SELECT USER IN COMMAND CENTER</strong><small data-active-role>IDENTITY REQUIRED</small>
+    <a class="identity-badge" href="command-center.html" data-identity-state="unverified" data-backend-state="pending" aria-label="Identity backend pending">
+      <span>ACTIVE IDENTITY</span><strong data-active-user>IDENTITY BACKEND PENDING</strong><small data-active-role>A3/A4 DEFERRED</small>
     </a>
   </header>
 
@@ -159,23 +159,23 @@
           </div>
         </section>
 
-        <section class="panel human-actions-panel" data-section="actions" data-state="identity" aria-labelledby="actions-title">
-          <div class="panel-head"><div><span>VALIDATOR → HUMAN DECISION</span><h2 id="actions-title">HUMAN SAFETY ACTIONS</h2></div><span class="state-label" data-action-panel-state>SELECT A VALID USER</span></div>
+        <section class="panel human-actions-panel" data-section="actions" data-state="blocked" aria-labelledby="actions-title">
+          <div class="panel-head"><div><span>VALIDATOR → HUMAN DECISION</span><h2 id="actions-title">HUMAN SAFETY ACTIONS</h2></div><span class="state-label" data-action-panel-state>ACTION BACKEND PENDING</span></div>
           <div class="action-intro"><p>Actions record a human workflow decision through the backend. They do not alter telemetry, repair equipment, or lower live risk.</p><span data-assignment-awareness>ASSIGNMENT AUTHORIZATION REMAINS BACKEND-ENFORCED</span></div>
           <div class="action-register">
-            <div class="action-control" data-action-control="ASSIGN"><button type="button" data-workflow-action="ASSIGN" disabled>ASSIGN INSPECTION</button><small data-action-reason="ASSIGN">Select a valid user</small></div>
-            <div class="action-control" data-action-control="ACK"><button type="button" data-workflow-action="ACK" disabled>ACKNOWLEDGE RISK</button><small data-action-reason="ACK">Select a valid user</small></div>
-            <div class="action-control" data-action-control="DISMISS"><button type="button" data-workflow-action="DISMISS" disabled>DISMISS ISSUE</button><small data-action-reason="DISMISS">Select a valid user</small></div>
-            <div class="action-control" data-action-control="RESOLVE"><button type="button" data-workflow-action="RESOLVE" disabled>RESOLVE INSPECTION</button><small data-action-reason="RESOLVE">Select a valid user</small></div>
+            <div class="action-control" data-action-control="ASSIGN"><button type="button" data-workflow-action="ASSIGN" disabled>ASSIGN INSPECTION</button><small data-action-reason="ASSIGN">A3/A4 BACKEND PENDING</small></div>
+            <div class="action-control" data-action-control="ACK"><button type="button" data-workflow-action="ACK" disabled>ACKNOWLEDGE RISK</button><small data-action-reason="ACK">A3/A4 BACKEND PENDING</small></div>
+            <div class="action-control" data-action-control="DISMISS"><button type="button" data-workflow-action="DISMISS" disabled>DISMISS ISSUE</button><small data-action-reason="DISMISS">A3/A4 BACKEND PENDING</small></div>
+            <div class="action-control" data-action-control="RESOLVE"><button type="button" data-workflow-action="RESOLVE" disabled>RESOLVE INSPECTION</button><small data-action-reason="RESOLVE">A3/A4 BACKEND PENDING</small></div>
           </div>
           <form class="action-confirmation" data-action-form hidden novalidate>
             <div class="form-heading"><span>EXPLICIT CONFIRMATION</span><strong data-action-form-title>CONFIRM HUMAN ACTION</strong></div>
-            <label data-assignee-field hidden><span>INSPECTOR</span><select data-assignee aria-describedby="assignee-help"><option value="">SELECT BACKEND-RETURNED INSPECTOR</option></select><small id="assignee-help">Inspector identities are loaded from GET /api/users.</small></label>
+            <label data-assignee-field hidden><span>INSPECTOR</span><select data-assignee aria-describedby="assignee-help" disabled><option value="">IDENTITY BACKEND PENDING</option></select><small id="assignee-help">Inspector identity integration is deferred beyond the current A2 read-only contract.</small></label>
             <label><span data-action-note-label>REASON / NOTE</span><textarea data-action-reason-input rows="3" required aria-describedby="action-note-help action-form-error"></textarea><small id="action-note-help">Required by the frozen human-action request contract. No default reason is supplied.</small></label>
             <div class="form-actions"><button class="confirm-action" type="submit" data-action-submit>CONFIRM ACTION</button><button type="button" data-action-cancel>CANCEL</button></div>
             <p class="form-error" id="action-form-error" data-action-form-error role="alert"></p>
           </form>
-          <div class="action-result" data-action-result role="status" aria-live="polite">NO HUMAN ACTION SUBMITTED</div>
+          <div class="action-result" data-action-result role="status" aria-live="polite">NO HUMAN ACTION SUBMITTED / BACKEND PENDING</div>
         </section>
 
       </aside>
@@ -183,7 +183,7 @@
 
     <section class="lower-wide" aria-label="Dependency and intervention context">
       <section class="panel simulation-panel" data-section="simulation" data-state="blocked" aria-labelledby="simulation-title">
-          <div class="panel-head"><div><span>HUMAN DECISION → WHAT-IF ANALYSIS</span><h2 id="simulation-title">SCENARIO SIMULATION</h2></div><span class="state-label" data-simulation-panel-state>CONTRACT BLOCKED</span></div>
+          <div class="panel-head"><div><span>HUMAN DECISION → WHAT-IF ANALYSIS</span><h2 id="simulation-title">SCENARIO SIMULATION</h2></div><span class="state-label" data-simulation-panel-state>INTERVENTION BACKEND PENDING</span></div>
           <div class="simulation-disclaimer"><strong>HYPOTHETICAL ENGINEERING SCENARIO</strong><p>This computation does not actuate machinery, change live telemetry, or guarantee a physical outcome.</p></div>
           <div class="scenario-comparison" data-scenario-comparison aria-live="polite">
             <article><span>BEFORE / LIVE INPUT SNAPSHOT</span><strong data-sim-before-score>—</strong><b data-sim-before-level>UNAVAILABLE</b><small>PRIORITY / <i data-sim-before-priority>—</i></small></article>
@@ -191,7 +191,7 @@
             <article><span>AFTER / HYPOTHETICAL RESULT</span><strong data-sim-after-score>—</strong><b data-sim-after-level>UNAVAILABLE</b><small>PRIORITY / <i data-sim-after-priority>—</i></small></article>
           </div>
           <div class="scenario-manifest"><div><span>CHANGED FACTORS</span><div data-sim-changed-factors>NO BACKEND SCENARIO RETURNED</div></div><div><span>BACKEND NOTE</span><p data-sim-note>NO BACKEND SCENARIO RETURNED</p></div></div>
-          <div class="simulation-control"><button type="button" data-simulate-intervention disabled>SIMULATE INTERVENTION</button><p data-simulation-support>VALID INTERVENTION VALUES ARE NOT DEFINED PER ASSET. REQUEST DISABLED TO PREVENT A FABRICATED PAYLOAD.</p></div>
+          <div class="simulation-control"><button type="button" data-simulate-intervention disabled>SIMULATE INTERVENTION</button><p data-simulation-support>A2 READ-ONLY SAFETY DATA REMAINS ACTIVE. INTERVENTION REQUESTS ARE DEFERRED.</p></div>
       </section>
 
       <section class="panel dependency-panel" data-section="dependency" data-state="loading" aria-labelledby="dependency-title">

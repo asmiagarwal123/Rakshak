@@ -1,5 +1,4 @@
 (function initializeAuditHistory() {
-  const POLL_MS = 1000;
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const state = {
@@ -27,16 +26,14 @@
     if (node) node.textContent = display(value, fallback);
   }
 
-  function selectedUser() {
-    return window.RakshakIdentity?.getSelectedUser?.() || null;
-  }
-
   function renderIdentity() {
-    const user = selectedUser();
     const badge = $('[data-identity-state]');
-    setText('[data-active-user]', user?.name, 'SELECT USER IN COMMAND CENTER');
-    setText('[data-active-role]', user?.role ? String(user.role).toUpperCase() : null, 'IDENTITY REQUIRED');
-    if (badge) badge.dataset.identityState = user ? 'verified' : 'unverified';
+    setText('[data-active-user]', 'IDENTITY BACKEND PENDING');
+    setText('[data-active-role]', 'A3/A4 DEFERRED');
+    if (badge) {
+      badge.dataset.identityState = 'unverified';
+      badge.dataset.backendState = 'pending';
+    }
   }
 
   function initializeRoutes() {
@@ -481,25 +478,25 @@
   }
 
   function handleIdentityChange() {
-    clearProtectedHistory();
     renderIdentity();
-    refresh();
   }
 
   function handleFilterChange() {
     renderTimeline();
   }
 
+  function renderBackendPending() {
+    document.body.dataset.auditState = 'pending';
+    setText('[data-feed-state]', 'AUDIT BACKEND PENDING');
+    setText('[data-update-state]', 'A2 DOES NOT INITIALIZE GET /api/audit');
+    setText('[data-recorder-state]', 'BACKEND PENDING');
+    setText('[data-filter-state]', 'FILTERS AVAILABLE WHEN AUDIT DATA IS CONNECTED');
+    $('[data-timeline]').setAttribute('aria-busy', 'false');
+    timelineState('pending', 'AUDIT BACKEND PENDING', 'NO REQUEST ISSUED / NO SAMPLE EVENTS INJECTED');
+    $$('[data-asset-filter], [data-type-filter], [data-clear-filters]').forEach((control) => { control.disabled = true; });
+  }
+
   initializeRoutes();
   renderIdentity();
-  $('[data-asset-filter]').addEventListener('change', handleFilterChange);
-  $('[data-type-filter]').addEventListener('change', handleFilterChange);
-  $('[data-clear-filters]').addEventListener('click', () => {
-    $('[data-asset-filter]').value = '';
-    $('[data-type-filter]').value = '';
-    renderTimeline();
-  });
-  window.addEventListener('rakshak:identity-change', handleIdentityChange);
-  refresh();
-  window.setInterval(refresh, POLL_MS);
+  renderBackendPending();
 }());

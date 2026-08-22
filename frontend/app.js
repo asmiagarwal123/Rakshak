@@ -1,6 +1,7 @@
 const COMMAND_CENTER_ROUTE = window.RakshakRoutes?.commandCenter?.path || null;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
+const POLL_INTERVAL_MS = window.RakshakRuntime.pollIntervalMs;
 let lastKnownGood = null;
 
 $$('[data-route]').forEach((link) => link.addEventListener('click', (event) => {
@@ -21,29 +22,42 @@ const reveal = () => $$('[data-reveal]').forEach((element) => window.setTimeout(
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', reveal); else reveal();
 
 const setText = (selector, value, fallback = '—') => $$(selector).forEach((element) => { element.textContent = value ?? fallback; });
-const number = (value) => Number.isFinite(Number(value)) ? Number(value) : null;
+const number = (value) => {
+  if (value === null || value === undefined || value === '') return null;
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? numeric : null;
+};
 
 function renderLanding(data) {
   if (!data) return;
   if (Array.isArray(data.priorities)) renderPriorities(data.priorities);
-  if (!data.asset || !data.risk) return;
-  lastKnownGood = data;
   const asset = data.asset;
-  const risk = data.risk.risk || data.risk;
+  const riskObject = data.risk;
+  const risk = riskObject ? {
+    score: riskObject.risk_score,
+    level: riskObject.risk_level,
+  } : null;
   const telemetry = Array.isArray(data.telemetry) ? data.telemetry.at(-1) : data.telemetry;
-  document.body.dataset.dataState = telemetry ? 'linked' : 'awaiting-telemetry';
-  setText('[data-asset-name]', asset.name); setText('[data-asset-id]', asset.id); setText('[data-asset-location]', asset.location);
-  setText('[data-asset-criticality]', asset.criticality); setText('[data-asset-context]', `${asset.id} / ${asset.location}`);
-  setText('[data-risk-score], [data-assess-score]', number(risk.score)); setText('[data-risk-level], [data-assess-level]', risk.level);
-  setText('[data-telemetry-source]', telemetry?.source || asset.telemetry_source || '—');
+  if (asset || riskObject || telemetry) lastKnownGood = data;
+  document.body.dataset.dataState = telemetry ? 'linked' : asset || riskObject ? 'awaiting-telemetry' : 'awaiting-asset';
+  if (asset) {
+    setText('[data-asset-name]', asset.name); setText('[data-asset-id]', asset.id); setText('[data-asset-location]', asset.location);
+    setText('[data-asset-criticality]', asset.criticality); setText('[data-asset-context]', `${asset.id} / ${asset.location}`);
+  }
+  if (risk) {
+    setText('[data-risk-score], [data-assess-score]', number(risk.score)); setText('[data-risk-level], [data-assess-level]', risk.level);
+    renderGauge(number(risk.score), risk.level);
+  }
+  setText('[data-telemetry-source]', telemetry?.source || '—');
   setText('[data-telemetry-status]', telemetry ? 'TELEMETRY LINKED' : 'TELEMETRY PENDING');
   setText('[data-temperature]', telemetry?.temperature_c ?? telemetry?.temperature); setText('[data-humidity]', telemetry?.humidity ?? telemetry?.humidity_pct);
   setText('[data-temperature-state]', telemetry?.state || '—'); setText('[data-last-update]', telemetry?.timestamp ? new Date(telemetry.timestamp).toLocaleTimeString([], { hour12: false }) : '—');
-  renderGauge(number(risk.score), risk.level);
-  renderFactors(data.risk.factors || []);
-  renderMl(data.risk.ml_anomaly); renderTrend(data.risk.trend);
-  renderExplain(data.risk);
-  renderPrevent(data.risk);
+  if (riskObject) {
+    renderFactors(riskObject.factors || []);
+    renderMl(riskObject.ml_anomaly); renderTrend(riskObject);
+    renderExplain(riskObject);
+    renderPrevent(riskObject);
+  }
 }
 
 function renderGauge(score, level) {
@@ -57,9 +71,15 @@ function renderGauge(score, level) {
 
 function renderFactors(factors) {
   const rows = $('[data-factor-rows]'); if (!rows) return;
-  rows.innerHTML = '';
-  if (!factors.length) { rows.innerHTML = '<div class="awaiting-data">AWAITING BACKEND FACTOR EVIDENCE</div>'; return; }
-  factors.forEach((factor) => { const row = document.createElement('div'); row.className = 'factor-row'; row.innerHTML = `<span>${factor.name ?? '—'}</span><small>${factor.value ?? '—'} / ${factor.threshold ?? '—'}<br />${factor.source ?? '—'}</small><strong>+${factor.contribution ?? '—'}</strong>`; rows.append(row); });
+  rows.replaceChildren();
+  if (!factors.length) { const empty = document.createElement('div'); empty.className = 'awaiting-data'; empty.textContent = 'AWAITING BACKEND FACTOR EVIDENCE'; rows.append(empty); return; }
+  factors.forEach((factor) => {
+    const row = document.createElement('div'); row.className = 'factor-row';
+    const label = document.createElement('span'); label.textContent = factor.factor ?? '—';
+    const detail = document.createElement('small'); detail.append(`${factor.value ?? '—'} / ${factor.threshold ?? '—'}`, document.createElement('br'), factor.source ?? '—');
+    const contribution = document.createElement('strong'); contribution.textContent = `+${factor.contribution ?? '—'}`;
+    row.append(label, detail, contribution); rows.append(row);
+  });
 }
 
 function renderMl(ml) {
@@ -69,7 +89,7 @@ function renderMl(ml) {
   if (ml.contribution !== undefined && ml.contribution !== null) parts.push(`CONTRIBUTION ${ml.contribution}`);
   setText('[data-ml-status]', parts.filter(Boolean).join(' / '));
 }
-function renderTrend(trend) { if (!trend) return; setText('[data-trend-state]', `${trend.state || '—'} / Δ ${trend.temp_delta_5_c ?? '—'} / V ${trend.velocity_score ?? '—'}`); }
+function renderTrend(riskObject) { if (!riskObject) return; setText('[data-trend-state]', `${riskObject.trend ?? '—'} / Δ ${riskObject.temp_delta_5_c ?? '—'} / V ${riskObject.velocity_score ?? '—'}`); }
 function renderPrevent(riskObject) {
   const recommendation = riskObject.recommendation; if (!recommendation) return;
   setText('[data-recommendation-action]', recommendation.action); const provenance = recommendation.provenance || {};
@@ -79,31 +99,66 @@ function renderPrevent(riskObject) {
   setText('[data-validator-rule]', recommendation.rule_fired);
 }
 function renderExplain(riskObject) {
-  const risk = riskObject.risk || riskObject;
   setText('[data-explanation]', riskObject.explanation);
-  setText('[data-explain-score]', number(risk.score)); setText('[data-explain-level]', risk.level);
+  setText('[data-explain-score]', number(riskObject.risk_score)); setText('[data-explain-level]', riskObject.risk_level);
   const confidence = riskObject.confidence_detail;
   if (confidence) { setText('[data-confidence-score]', confidence.score); setText('[data-confidence-reason]', confidence.reason); setText('[data-confidence-present]', Array.isArray(confidence.channels_present) ? confidence.channels_present.join(', ') || '—' : confidence.channels_present); setText('[data-confidence-missing]', Array.isArray(confidence.channels_missing) ? confidence.channels_missing.join(', ') || '—' : confidence.channels_missing); }
   const factors = riskObject.factors || []; const evidence = $('[data-explain-factors]');
-  if (evidence && factors.length) { evidence.innerHTML = ''; factors.forEach((factor) => { const row = document.createElement('div'); row.className = 'evidence-row'; row.innerHTML = `<div class="evidence-source"><span>SOURCE</span><strong>${factor.source ?? '—'}</strong></div><div class="evidence-factor"><span>FACTOR</span><strong>${factor.name ?? '—'}</strong><small>${factor.value ?? '—'}</small></div><div class="evidence-contribution"><span>CONTRIBUTION</span><strong>+${factor.contribution ?? '—'}</strong></div>`; evidence.append(row); }); }
+  if (evidence && factors.length) { evidence.innerHTML = ''; factors.forEach((factor) => { const row = document.createElement('div'); row.className = 'evidence-row'; row.innerHTML = '<div class="evidence-source"><span>SOURCE</span><strong></strong></div><div class="evidence-factor"><span>FACTOR</span><strong></strong><small></small></div><div class="evidence-contribution"><span>CONTRIBUTION</span><strong></strong></div>'; row.querySelector('.evidence-source strong').textContent = factor.source ?? '—'; row.querySelector('.evidence-factor strong').textContent = factor.factor ?? '—'; row.querySelector('.evidence-factor small').textContent = factor.value ?? '—'; row.querySelector('.evidence-contribution strong').textContent = `+${factor.contribution ?? '—'}`; evidence.append(row); }); }
   const warningList = $('[data-data-warnings]'); const warnings = riskObject.data_warnings || []; if (warningList) { warningList.innerHTML = ''; warnings.forEach((warning) => { const item = document.createElement('div'); item.className = 'data-warning'; item.textContent = warning; warningList.append(item); }); }
 }
+function priorityDisplay(value) {
+  return value === null || value === undefined || value === '' ? '—' : String(value);
+}
+
+function createPriorityRow() {
+  const row = document.createElement('div');
+  row.className = 'priority-row';
+  row.setAttribute('role', 'listitem');
+  row.innerHTML = '<span class="priority-rank"></span><div class="priority-asset"><strong></strong><small></small></div><div class="priority-metric priority-metric--risk"><span class="priority-label">RISK</span><strong class="priority-risk"></strong></div><div class="priority-metric priority-metric--level"><span class="priority-label">LEVEL</span><strong class="priority-level"></strong></div><div class="priority-trend"><span class="priority-label">TREND</span><strong></strong></div><div class="priority-metric priority-metric--score"><span class="priority-label">PRIORITY</span><strong class="priority-score"></strong></div>';
+  return row;
+}
+
+function updatePriorityRow(row, item) {
+  const level = priorityDisplay(item.level).toUpperCase();
+  row.dataset.priorityAssetId = priorityDisplay(item.asset_id);
+  row.dataset.level = level.toLowerCase();
+  row.querySelector('.priority-rank').textContent = `#${priorityDisplay(item.rank)}`;
+  row.querySelector('.priority-asset strong').textContent = priorityDisplay(item.name);
+  row.querySelector('.priority-asset strong').title = priorityDisplay(item.name);
+  row.querySelector('.priority-asset small').textContent = priorityDisplay(item.asset_id);
+  row.querySelector('.priority-risk').textContent = priorityDisplay(item.risk);
+  row.querySelector('.priority-level').textContent = level;
+  row.querySelector('.priority-trend strong').textContent = priorityDisplay(item.trend);
+  row.querySelector('.priority-score').textContent = priorityDisplay(item.priority);
+  row.setAttribute('aria-label', `Rank ${priorityDisplay(item.rank)}. Asset ${priorityDisplay(item.asset_id)}. ${priorityDisplay(item.name)}. Risk ${priorityDisplay(item.risk)}. Level ${level}. Trend ${priorityDisplay(item.trend)}. Priority ${priorityDisplay(item.priority)}.`);
+}
+
 function renderPriorities(items) {
-  const queue = $('[data-priority-rows]'); if (!queue || !items.length) return;
-  const before = new Map($$('.priority-row').map((row) => [row.dataset.assetId, row.getBoundingClientRect()]));
-  const existing = new Map($$('.priority-row').map((row) => [row.dataset.assetId, row]));
-  items.forEach((item) => {
-    const id = item.asset_id || item.id; if (!id) return;
-    let row = existing.get(String(id));
-    if (!row) { row = document.createElement('div'); row.className = 'priority-row'; row.dataset.assetId = String(id); queue.append(row); }
-    const level = String(item.level || '').toUpperCase(); row.dataset.level = level.toLowerCase();
-    row.innerHTML = `<span class="priority-rank">#${item.rank ?? '—'}</span><div class="priority-asset"><strong>${item.name ?? '—'}</strong><small>${item.asset_id ?? '—'}</small></div><div><span class="priority-label">RISK</span><strong class="priority-risk">${item.risk ?? '—'}</strong></div><div><span class="priority-label">LEVEL</span><strong class="priority-level">${item.level ?? '—'}</strong></div><div><span class="priority-label">PRIORITY</span><strong class="priority-score">${item.priority ?? '—'}</strong></div><div class="priority-trend"><span class="priority-label">TREND</span><strong>${item.trend ?? '—'}</strong></div>`;
+  const queue = $('[data-priority-rows]');
+  if (!queue) return;
+  const returned = Array.isArray(items)
+    ? items.filter((item) => item && typeof item === 'object')
+    : [];
+  queue.replaceChildren();
+
+  if (!returned.length) {
+    queue.dataset.state = 'awaiting';
+    const awaiting = document.createElement('div');
+    awaiting.className = 'awaiting-data';
+    awaiting.textContent = 'Awaiting /api/priorities';
+    queue.append(awaiting);
+    return;
+  }
+
+  queue.dataset.state = 'loaded';
+  returned.forEach((item) => {
+    const row = createPriorityRow();
+    updatePriorityRow(row, item);
+    queue.append(row);
   });
-  const ids = new Set(items.map((item) => String(item.asset_id || item.id)).filter(Boolean));
-  existing.forEach((row, id) => { if (!ids.has(id)) row.remove(); });
-  items.forEach((item) => { const row = existing.get(String(item.asset_id || item.id)) || [...queue.children].find((child) => child.dataset.assetId === String(item.asset_id || item.id)); if (row) queue.append(row); });
-  $$('.priority-row').forEach((row) => { const old = before.get(row.dataset.assetId); const next = row.getBoundingClientRect(); if (old) { const dy = old.top - next.top; if (Math.abs(dy) > 1) { row.style.transform = `translateY(${dy}px)`; row.classList.add('is-moving'); requestAnimationFrame(() => { row.style.transform = ''; }); window.setTimeout(() => row.classList.remove('is-moving'), 700); } } });
   setText('[data-priority-status]', 'PRIORITY QUEUE LINKED');
+  setText('[data-priority-output-state]', `BACKEND PRIORITY OUTPUT / ${returned.length} ASSETS`);
 }
 
 function observeSection(selector, className) { const section = $(selector); if (!section) return; if (!('IntersectionObserver' in window)) { section.classList.add(className); return; } const observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { section.classList.add(className); observer.disconnect(); } }, { threshold: .16 }); observer.observe(section); }
@@ -113,4 +168,4 @@ observeSection('.prioritize', 'is-active');
 observeSection('.prevent', 'is-active');
 
 async function refresh() { try { const data = await window.RakshakAPI?.loadLandingData(); if (data) renderLanding(data); } catch (error) { if (!lastKnownGood) document.body.dataset.dataState = 'awaiting-telemetry'; } }
-refresh(); window.setInterval(refresh, 900);
+refresh(); window.setInterval(refresh, POLL_INTERVAL_MS);

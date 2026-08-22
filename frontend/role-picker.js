@@ -81,7 +81,19 @@
     return promise;
   }
 
+  function deferRoot(root) {
+    const select = root.querySelector('[data-role-picker-select]');
+    const state = root.querySelector('[data-role-picker-state]');
+    root.dataset.state = 'deferred';
+    if (select) {
+      select.disabled = true;
+      replacePlaceholder(select, 'IDENTITY BACKEND PENDING');
+    }
+    if (state) state.textContent = 'A3/A4 IDENTITY DEFERRED';
+  }
+
   const refresh = () => Promise.all(roots.map(mount));
-  const ready = refresh();
+  roots.forEach(deferRoot);
+  const ready = Promise.resolve([]);
   window.RakshakRolePicker = Object.freeze({ ready, refresh });
 }());

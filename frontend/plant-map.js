@@ -1,8 +1,7 @@
 (function initializePlantMap() {
   const SVG_NS = 'http://www.w3.org/2000/svg';
   const XHTML_NS = 'http://www.w3.org/1999/xhtml';
-  const POLL_MS = 1000;
-  const TOPOLOGY_REFRESH_CYCLES = 5;
+  const POLL_MS = window.RakshakRuntime.pollIntervalMs;
   const CANVAS = Object.freeze({ width: 1200, height: 620, nodeWidth: 220, nodeHeight: 126, marginX: 58, marginY: 64 });
   const SELECTION_STORAGE_KEY = 'rakshak:selected-asset';
   const SUPPORTED_ICONS = new Set(['tank', 'pump', 'boiler', 'valve', 'motor']);
@@ -20,7 +19,6 @@
     graphSignature: '',
     topologyAttempted: false,
     topologyFailures: 0,
-    pollCycle: 0,
     requestVersion: 0,
     refreshPromise: null,
     refreshQueued: false,
@@ -86,16 +84,14 @@
     return text;
   }
 
-  function selectedUser() {
-    return window.RakshakIdentity?.getSelectedUser?.() || null;
-  }
-
   function renderIdentity() {
-    const user = selectedUser();
     const badge = $('[data-identity-state]');
-    setText('[data-active-user]', user?.name, 'SELECT USER IN COMMAND CENTER');
-    setText('[data-active-role]', user?.role ? String(user.role).toUpperCase() : null, 'IDENTITY REQUIRED');
-    if (badge) badge.dataset.identityState = user ? 'verified' : 'unverified';
+    setText('[data-active-user]', 'IDENTITY BACKEND PENDING');
+    setText('[data-active-role]', 'A3/A4 DEFERRED');
+    if (badge) {
+      badge.dataset.identityState = 'unverified';
+      badge.dataset.backendState = 'pending';
+    }
   }
 
   function initializeRoutes() {
@@ -122,9 +118,20 @@
   }
 
   function riskFor(asset) {
-    if (asset?.risk && typeof asset.risk === 'object') return asset.risk;
     const master = state.riskObjects.get(String(asset?.id));
-    return master?.risk && typeof master.risk === 'object' ? master.risk : {};
+    if (master && typeof master === 'object') {
+      return {
+        score: master.risk_score,
+        level: master.risk_level,
+        priority_score: master.priority_score,
+      };
+    }
+    const snapshot = asset?.risk && typeof asset.risk === 'object' ? asset.risk : {};
+    return {
+      score: snapshot.score ?? asset?.risk_score,
+      level: snapshot.level ?? asset?.risk_level,
+      priority_score: asset?.priority_score,
+    };
   }
 
   function dependencyFor(assetId) {
@@ -134,7 +141,8 @@
 
   function iconFor(asset) {
     const type = normalized(asset?.asset_type || asset?.type);
-    return SUPPORTED_ICONS.has(type) ? type : 'generic';
+    if (SUPPORTED_ICONS.has(type)) return type;
+    return [...SUPPORTED_ICONS].find((icon) => type.includes(icon)) || 'generic';
   }
 
   function referenceLabel(reference) {
@@ -322,7 +330,7 @@
     return visited;
   }
 
-  function activeEdgeKeys(assetId) {
+  function activeEdgeKeys(assetId, reverse = false) {
     if (!assetId) return new Set();
     const reachable = new Set([String(assetId)]);
     const active = new Set();
@@ -330,10 +338,12 @@
     while (changed) {
       changed = false;
       state.edges.forEach((edge) => {
-        if (reachable.has(edge.source) && !active.has(edge.key)) {
+        const source = reverse ? edge.target : edge.source;
+        const target = reverse ? edge.source : edge.target;
+        if (reachable.has(source) && !active.has(edge.key)) {
           active.add(edge.key);
-          if (!reachable.has(edge.target)) {
-            reachable.add(edge.target);
+          if (!reachable.has(target)) {
+            reachable.add(target);
             changed = true;
           }
         }
@@ -346,6 +356,7 @@
     const downstream = state.selected ? reachableFrom(state.selected) : new Set();
     const upstream = state.selected ? reachableFrom(state.selected, true) : new Set();
     const activeEdges = activeEdgeKeys(state.selected);
+    const upstreamEdges = activeEdgeKeys(state.selected, true);
     state.assets.forEach((asset) => {
       const id = String(asset.id);
       const node = nodeFor(id);
@@ -365,11 +376,11 @@
       $('[data-node-score]', node).textContent = display(risk.score);
       $('[data-node-status]', node).textContent = display(asset.status, 'STATUS UNAVAILABLE').toUpperCase();
       $('[data-node-icon]', node).setAttribute('href', `#asset-${iconFor(asset)}`);
-      $('[data-node-title]', node).textContent = `${display(asset.name || asset.id)} / RISK ${display(risk.score)} / LEVEL ${display(risk.level)} / PRIORITY ${display(risk.priority)}`;
+      $('[data-node-title]', node).textContent = `${display(asset.name || asset.id)} / RISK ${display(risk.score)} / LEVEL ${display(risk.level)} / PRIORITY ${display(risk.priority_score)}`;
     });
     $$('[data-edge]').forEach((path) => {
       const key = path.dataset.edge;
-      const upstreamEdge = state.selected && path.dataset.target === state.selected;
+      const upstreamEdge = upstreamEdges.has(key);
       path.setAttribute('class', `conduit${activeEdges.has(key) ? ' is-active' : ''}${upstreamEdge ? ' is-upstream' : ''}${state.selected && !activeEdges.has(key) && !upstreamEdge ? ' is-subdued' : ''}`);
     });
   }
@@ -454,7 +465,7 @@
 
     const riskGrid = document.createElement('dl');
     riskGrid.className = 'detail-grid';
-    riskGrid.append(detailLine('PROTOTYPE RISK INDEX', risk.score), detailLine('RISK LEVEL', risk.level), detailLine('PRIORITY', risk.priority), detailLine('ASSET STATUS', asset.status));
+    riskGrid.append(detailLine('PROTOTYPE RISK INDEX', risk.score), detailLine('RISK LEVEL', risk.level), detailLine('PRIORITY', risk.priority_score), detailLine('ASSET STATUS', asset.status));
 
     const impact = document.createElement('section');
     impact.className = 'impact-record';
@@ -567,22 +578,10 @@
       setText('[data-risk-state]', 'RISK STATE / LAST KNOWN GOOD');
       return;
     }
-    if (error?.status === 401) {
-      setText('[data-system-state]', 'SELECT A VALID USER');
-      setText('[data-refresh-state]', 'BACKEND RETURNED 401 / NO PROTECTED DATA SHOWN');
-      setText('[data-risk-state]', 'IDENTITY REQUIRED');
-      setGraphState('error', 'SELECT A VALID USER', 'CHOOSE A BACKEND-PROVIDED IDENTITY IN COMMAND CENTER');
-    } else if (error?.status === 403) {
-      setText('[data-system-state]', 'INSUFFICIENT BACKEND PERMISSION');
-      setText('[data-refresh-state]', 'BACKEND RETURNED 403 / REQUEST NOT EXECUTED');
-      setText('[data-risk-state]', 'ACCESS DENIED');
-      setGraphState('error', 'PLANT DATA UNAVAILABLE', 'SELECTED IDENTITY IS NOT AUTHORIZED');
-    } else {
-      setText('[data-system-state]', 'PLANT DATA UNAVAILABLE');
-      setText('[data-refresh-state]', error?.status ? `API STATUS ${error.status}` : 'BACKEND REQUEST FAILED');
-      setText('[data-risk-state]', 'RISK DATA UNAVAILABLE');
-      setGraphState('error', 'PLANT DATA UNAVAILABLE', 'NO FALLBACK ASSETS OR RELATIONSHIPS CREATED');
-    }
+    setText('[data-system-state]', 'PLANT DATA UNAVAILABLE');
+    setText('[data-refresh-state]', error?.status ? `API STATUS ${error.status}` : 'BACKEND REQUEST FAILED');
+    setText('[data-risk-state]', 'RISK DATA UNAVAILABLE');
+    setGraphState('error', 'PLANT DATA UNAVAILABLE', 'NO FALLBACK ASSETS OR RELATIONSHIPS CREATED');
   }
 
   async function performRefresh() {
@@ -610,15 +609,11 @@
         renderDetail();
         return;
       }
-      const previousIds = state.assets.map((asset) => String(asset.id)).join('|');
-      const nextIds = assets.map((asset) => String(asset.id)).join('|');
       state.assets = assets;
-      const topologyDue = !state.topologyAttempted || previousIds !== nextIds || state.pollCycle % TOPOLOGY_REFRESH_CYCLES === 0;
-      if (topologyDue) await refreshTopology(version);
+      await refreshTopology(version);
       if (version !== state.requestVersion) return;
       if (state.selected && !state.assets.some((asset) => String(asset.id) === state.selected)) state.selected = null;
       if (!state.selected && state.requestedSelection && state.assets.some((asset) => String(asset.id) === String(state.requestedSelection))) state.selected = String(state.requestedSelection);
-      state.pollCycle += 1;
       state.lastGoodAt = new Date();
       document.body.dataset.mapState = 'loaded';
       renderGraph();
@@ -671,17 +666,12 @@
   }
 
   function handleIdentityChange() {
-    state.requestVersion += 1;
-    state.pollCycle = 0;
-    clearGraphForIdentity();
     renderIdentity();
-    refresh();
   }
 
   initializeRoutes();
   initializeControls();
   renderIdentity();
-  window.addEventListener('rakshak:identity-change', handleIdentityChange);
   refresh();
   window.setInterval(refresh, POLL_MS);
 }());
