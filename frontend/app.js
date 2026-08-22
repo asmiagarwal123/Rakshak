@@ -2,8 +2,6 @@ const COMMAND_CENTER_ROUTE = window.RakshakRoutes?.commandCenter?.path || null;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
 let lastKnownGood = null;
-let previousScore = null;
-let lastKnownPriorities = null;
 
 $$('[data-route]').forEach((link) => link.addEventListener('click', (event) => {
   const route = window.RakshakRoutes?.[link.dataset.route];
@@ -33,6 +31,7 @@ function renderLanding(data) {
   const asset = data.asset;
   const risk = data.risk.risk || data.risk;
   const telemetry = Array.isArray(data.telemetry) ? data.telemetry.at(-1) : data.telemetry;
+  document.body.dataset.dataState = telemetry ? 'linked' : 'awaiting-telemetry';
   setText('[data-asset-name]', asset.name); setText('[data-asset-id]', asset.id); setText('[data-asset-location]', asset.location);
   setText('[data-asset-criticality]', asset.criticality); setText('[data-asset-context]', `${asset.id} / ${asset.location}`);
   setText('[data-risk-score], [data-assess-score]', number(risk.score)); setText('[data-risk-level], [data-assess-level]', risk.level);
@@ -41,10 +40,10 @@ function renderLanding(data) {
   setText('[data-temperature]', telemetry?.temperature_c ?? telemetry?.temperature); setText('[data-humidity]', telemetry?.humidity ?? telemetry?.humidity_pct);
   setText('[data-temperature-state]', telemetry?.state || '—'); setText('[data-last-update]', telemetry?.timestamp ? new Date(telemetry.timestamp).toLocaleTimeString([], { hour12: false }) : '—');
   renderGauge(number(risk.score), risk.level);
-  renderFactors(data.risk.factors || [] , number(risk.score));
+  renderFactors(data.risk.factors || []);
   renderMl(data.risk.ml_anomaly); renderTrend(data.risk.trend);
   renderExplain(data.risk);
-  renderPrevent(data.risk, asset.id);
+  renderPrevent(data.risk);
 }
 
 function renderGauge(score, level) {
@@ -56,32 +55,28 @@ function renderGauge(score, level) {
   $$('[data-risk-level], [data-assess-level]').forEach((element) => { element.dataset.level = String(level || '').toLowerCase(); element.style.color = palette[level] || '#8a93a1'; });
 }
 
-function renderFactors(factors, score) {
+function renderFactors(factors) {
   const rows = $('[data-factor-rows]'); if (!rows) return;
   rows.innerHTML = '';
+  if (!factors.length) { rows.innerHTML = '<div class="awaiting-data">AWAITING BACKEND FACTOR EVIDENCE</div>'; return; }
   factors.forEach((factor) => { const row = document.createElement('div'); row.className = 'factor-row'; row.innerHTML = `<span>${factor.name ?? '—'}</span><small>${factor.value ?? '—'} / ${factor.threshold ?? '—'}<br />${factor.source ?? '—'}</small><strong>+${factor.contribution ?? '—'}</strong>`; rows.append(row); });
-  const visibleSum = factors.reduce((sum, factor) => sum + (number(factor.contribution) || 0), 0);
-  setText('[data-factor-sum]', visibleSum); const verified = score !== null && visibleSum === score;
-  setText('[data-factor-check]', verified ? 'FACTOR SUM VERIFIED' : 'DATA INTEGRITY WARNING');
-  $('[data-factor-check]')?.classList.toggle('is-warning', !verified);
 }
 
-function renderMl(ml) { if (!ml) return; setText('[data-ml-status]', ml.status === 'AVAILABLE' ? `${ml.model || 'MODEL'} / ${ml.is_anomaly ? 'ANOMALY' : 'NO ANOMALY'} / +${ml.contribution ?? 0}` : 'UNAVAILABLE'); }
+function renderMl(ml) {
+  if (!ml) return;
+  const parts = [ml.status, ml.model];
+  if (typeof ml.is_anomaly === 'boolean') parts.push(ml.is_anomaly ? 'ANOMALY' : 'NO ANOMALY');
+  if (ml.contribution !== undefined && ml.contribution !== null) parts.push(`CONTRIBUTION ${ml.contribution}`);
+  setText('[data-ml-status]', parts.filter(Boolean).join(' / '));
+}
 function renderTrend(trend) { if (!trend) return; setText('[data-trend-state]', `${trend.state || '—'} / Δ ${trend.temp_delta_5_c ?? '—'} / V ${trend.velocity_score ?? '—'}`); }
-function renderPrevent(riskObject, assetId) {
+function renderPrevent(riskObject) {
   const recommendation = riskObject.recommendation; if (!recommendation) return;
   setText('[data-recommendation-action]', recommendation.action); const provenance = recommendation.provenance || {};
   setText('[data-sop-title]', provenance.title); setText('[data-sop-doc]', provenance.doc_id); setText('[data-sop-section]', provenance.section, ''); setText('[data-sop-version]', provenance.version, '');
   const validation = recommendation.validation; const gate = $('.validator-stage');
   if (validation !== undefined) { const result = typeof validation === 'string' ? validation : validation.result || validation.status; const normalized = String(result || '').toUpperCase(); if (gate) gate.dataset.validatorState = normalized === 'PASS' ? 'pass' : normalized === 'FAIL' ? 'fail' : 'pending'; setText('[data-validator-result]', result); }
   setText('[data-validator-rule]', recommendation.rule_fired);
-  const risk = riskObject.risk || riskObject; setText('[data-before-score]', number(risk.score)); setText('[data-before-level]', risk.level);
-  const button = $('[data-simulate]'); if (button && !button.dataset.bound) { button.dataset.bound = 'true'; button.addEventListener('click', () => runSimulation(assetId, button)); }
-}
-async function runSimulation(assetId, button) {
-  if (!assetId || !window.RakshakAPI?.simulateIntervention) return;
-  button.disabled = true; button.classList.add('is-processing'); setText('[data-simulation-status]', 'SIMULATION REQUEST IN PROGRESS');
-  try { const result = await window.RakshakAPI.simulateIntervention(assetId); const before = result.before || {}; const after = result.after || {}; setText('[data-before-score]', before.score); setText('[data-before-level]', before.level); setText('[data-after-score]', after.score); setText('[data-after-level]', after.level); const changed = $('[data-changed-factors]'); if (changed) { changed.innerHTML = ''; (result.changed_factors || []).forEach((item) => { const row = document.createElement('div'); row.textContent = typeof item === 'string' ? item : JSON.stringify(item); changed.append(row); }); } setText('[data-simulation-note]', result.note); setText('[data-simulation-status]', 'SCENARIO SIMULATION COMPLETE'); } catch (error) { setText('[data-simulation-status]', 'SIMULATION UNAVAILABLE'); } finally { button.disabled = false; button.classList.remove('is-processing'); }
 }
 function renderExplain(riskObject) {
   const risk = riskObject.risk || riskObject;
@@ -108,7 +103,6 @@ function renderPriorities(items) {
   existing.forEach((row, id) => { if (!ids.has(id)) row.remove(); });
   items.forEach((item) => { const row = existing.get(String(item.asset_id || item.id)) || [...queue.children].find((child) => child.dataset.assetId === String(item.asset_id || item.id)); if (row) queue.append(row); });
   $$('.priority-row').forEach((row) => { const old = before.get(row.dataset.assetId); const next = row.getBoundingClientRect(); if (old) { const dy = old.top - next.top; if (Math.abs(dy) > 1) { row.style.transform = `translateY(${dy}px)`; row.classList.add('is-moving'); requestAnimationFrame(() => { row.style.transform = ''; }); window.setTimeout(() => row.classList.remove('is-moving'), 700); } } });
-  lastKnownPriorities = items;
   setText('[data-priority-status]', 'PRIORITY QUEUE LINKED');
 }
 

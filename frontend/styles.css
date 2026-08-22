@@ -94,3 +94,68 @@ body:has(.landing-cinematic-bg) .explain.is-active .evidence-flow-step:nth-child
 @media(max-width:900px){body:has(.landing-cinematic-bg) .explain{grid-template-columns:1fr;min-height:auto;row-gap:38px;padding-top:120px;padding-bottom:60px}body:has(.landing-cinematic-bg) .explain-copy{max-width:540px}body:has(.landing-cinematic-bg) .evidence-workstation{max-width:720px}}
 @media(max-width:760px){body:has(.landing-cinematic-bg) .explain{display:block;padding:108px 6vw 52px}body:has(.landing-cinematic-bg) .explain h2{font-size:clamp(3.4rem,14vw,5rem)}body:has(.landing-cinematic-bg) .evidence-workstation{margin-top:38px;padding:18px 17px 0;border-radius:14px}body:has(.landing-cinematic-bg) .evidence-workstation-head{align-items:flex-start;flex-direction:column;gap:7px}body:has(.landing-cinematic-bg) .evidence-flow{grid-template-columns:1fr 1fr;gap:12px;padding:15px 0}body:has(.landing-cinematic-bg) .evidence-flow-connector{display:none}body:has(.landing-cinematic-bg) .evidence-flow-step{font-size:8px}body:has(.landing-cinematic-bg) .evidence-lower{grid-template-columns:1fr}body:has(.landing-cinematic-bg) .evidence-stack{padding-right:0;border-right:0;border-bottom:1px solid rgba(173,185,196,.17)}body:has(.landing-cinematic-bg) .confidence-rail{padding-left:0}body:has(.landing-cinematic-bg) .explain-spine{margin-top:52px}}
 @media(prefers-reduced-motion:reduce){body:has(.landing-cinematic-bg) .explain.is-active .evidence-flow-step,body:has(.landing-cinematic-bg) .explain.is-active .evidence-flow-connector{animation:none;opacity:1;transform:none}}
+/* Lift the fixed cinematic footage slightly so its globe resolves at hero center. */
+body:has(.landing-cinematic-bg) .landing-cinematic-bg{object-position:center 58%}
+@media(max-width:760px){body:has(.landing-cinematic-bg) .landing-cinematic-bg{object-position:62% 58%}}
+
+/* Final source-of-truth alignment: landing page only. */
+body:has(.landing-cinematic-bg) .brand small{color:#7f8992;font:500 8px var(--mono);letter-spacing:.1em;white-space:nowrap}
+body:has(.landing-cinematic-bg) .header-status{color:#8f99a2;letter-spacing:.1em}
+body:has(.landing-cinematic-bg) .readout-denom{display:none}
+
+body:has(.landing-cinematic-bg) .decision-brief{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:clamp(24px,4vw,70px);padding:42px clamp(24px,8vw,205px);border-top:1px solid rgba(173,185,196,.16);border-bottom:1px solid rgba(173,185,196,.16);background:linear-gradient(90deg,rgba(11,14,18,.70),rgba(18,24,31,.54),rgba(11,14,18,.64))}
+body:has(.landing-cinematic-bg) .decision-brief article{display:grid;grid-template-columns:minmax(118px,.34fr) minmax(0,1fr);gap:22px;align-items:start}
+body:has(.landing-cinematic-bg) .decision-brief article>span{color:#6fe3ff;font:600 9px var(--mono);letter-spacing:.12em}
+body:has(.landing-cinematic-bg) .decision-brief p{max-width:520px;margin:0;color:#aeb7be;font-size:13px;line-height:1.65}
+body:has(.landing-cinematic-bg) .decision-brief>i{color:#59636d;font:400 18px var(--mono);font-style:normal}
+body:has(.landing-cinematic-bg) .capability-rail{position:relative;z-index:1;display:flex;align-items:stretch;justify-content:center;padding:0 clamp(24px,5vw,110px);border-bottom:1px solid rgba(173,185,196,.13);background:rgba(8,12,16,.46);overflow-x:auto;scrollbar-width:none}
+body:has(.landing-cinematic-bg) .capability-rail::-webkit-scrollbar{display:none}
+body:has(.landing-cinematic-bg) .capability-rail span{display:grid;place-items:center;min-width:max-content;padding:13px clamp(12px,1.4vw,24px);border-left:1px solid rgba(173,185,196,.12);color:#7f8992;font:600 7px var(--mono);letter-spacing:.09em;text-align:center}
+body:has(.landing-cinematic-bg) .capability-rail span:last-child{border-right:1px solid rgba(173,185,196,.12)}
+
+body:has(.landing-cinematic-bg) .telemetry-card-head{align-items:flex-start;gap:16px}
+body:has(.landing-cinematic-bg) .telemetry-card-head>span{max-width:68%;line-height:1.45}
+body:has(.landing-cinematic-bg) .telemetry-card-head b{color:#8a93a1;text-align:right;line-height:1.45}
+body:has(.landing-cinematic-bg):not([data-data-state="linked"]) .telemetry-wave i,
+body:has(.landing-cinematic-bg):not([data-data-state="linked"]) .packet,
+body:has(.landing-cinematic-bg):not([data-data-state="linked"]) .signal-node,
+body:has(.landing-cinematic-bg):not([data-data-state="linked"]) .state-dot{animation:none;opacity:.22}
+body:has(.landing-cinematic-bg):not([data-data-state="linked"]) .telemetry-pulse{display:none}
+body:has(.landing-cinematic-bg):not([data-data-state="linked"]) .flow,
+body:has(.landing-cinematic-bg):not([data-data-state="linked"]) .sensor,
+body:has(.landing-cinematic-bg):not([data-data-state="linked"]) .sensor-halo,
+body:has(.landing-cinematic-bg):not([data-data-state="linked"]) .telemetry-path{animation:none;filter:none;opacity:.24}
+body:has(.landing-cinematic-bg):not([data-data-state="linked"]) .temperature-state{color:#8a93a1}
+body:has(.landing-cinematic-bg):not([data-data-state="linked"]) .state-dot{background:#8a93a1}
+
+body:has(.landing-cinematic-bg) .factor-total{display:flex;align-items:center;justify-content:space-between;gap:18px}
+body:has(.landing-cinematic-bg) .factor-total small{grid-column:auto;color:#6fe3ff;text-align:right;letter-spacing:.08em}
+
+body:has(.landing-cinematic-bg) .trust-rail{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0 -26px;padding:14px 26px;border-top:1px solid rgba(173,185,196,.17);background:rgba(6,10,14,.22)}
+body:has(.landing-cinematic-bg) .trust-rail span{padding:0 15px;border-left:1px solid rgba(173,185,196,.15);color:#aab5bd;font:600 8px var(--mono);line-height:1.45;letter-spacing:.08em;text-align:center}
+body:has(.landing-cinematic-bg) .trust-rail span:first-child{border-left:0}
+
+body:has(.landing-cinematic-bg) .operator-stage small{display:block;margin-top:12px;color:#8a93a1;font:500 9px var(--mono);line-height:1.55}
+body:has(.landing-cinematic-bg) .intervention-concept{padding:22px 25px}
+body:has(.landing-cinematic-bg) .concept-state{align-self:center;padding:8px 10px;border:1px solid rgba(111,227,255,.26);border-radius:6px;color:#6fe3ff;font:600 8px var(--mono);letter-spacing:.1em;white-space:nowrap}
+body:has(.landing-cinematic-bg) .scenario-path{display:grid;grid-template-columns:auto auto auto auto auto auto auto;align-items:center;gap:14px;margin-top:22px;padding:17px 0;border-top:1px solid rgba(173,185,196,.17);border-bottom:1px solid rgba(173,185,196,.17);color:#c3cbd1;font:600 8px var(--mono);letter-spacing:.08em;text-align:center}
+body:has(.landing-cinematic-bg) .scenario-path i{color:#6fe3ff;font-style:normal}
+body:has(.landing-cinematic-bg) .intervention-concept .scenario-note{max-width:780px;margin:15px 0 0;color:#8f99a2;font-size:11px;line-height:1.6}
+
+@media(max-width:1100px){
+  body:has(.landing-cinematic-bg) .decision-brief{padding-left:6vw;padding-right:6vw;gap:28px}
+  body:has(.landing-cinematic-bg) .decision-brief article{grid-template-columns:1fr;gap:9px}
+  body:has(.landing-cinematic-bg) .trust-rail{margin-left:-21px;margin-right:-21px;padding-left:15px;padding-right:15px}
+}
+@media(max-width:760px){
+  body:has(.landing-cinematic-bg) .brand small{display:none}
+  body:has(.landing-cinematic-bg) .decision-brief{grid-template-columns:1fr;gap:24px;padding:34px 6vw}
+  body:has(.landing-cinematic-bg) .decision-brief>i{transform:rotate(90deg);justify-self:start}
+  body:has(.landing-cinematic-bg) .capability-rail{justify-content:flex-start;padding:0 6vw}
+  body:has(.landing-cinematic-bg) .trust-rail{grid-template-columns:1fr 1fr;gap:0;margin-left:-17px;margin-right:-17px;padding:0 10px}
+  body:has(.landing-cinematic-bg) .trust-rail span{padding:12px 8px;border-top:1px solid rgba(173,185,196,.12)}
+  body:has(.landing-cinematic-bg) .trust-rail span:nth-child(odd){border-left:0}
+  body:has(.landing-cinematic-bg) .intervention-head{align-items:flex-start;flex-direction:column;gap:14px}
+  body:has(.landing-cinematic-bg) .scenario-path{grid-template-columns:1fr;gap:9px;text-align:left}
+  body:has(.landing-cinematic-bg) .scenario-path i{transform:rotate(90deg);justify-self:start}
+}

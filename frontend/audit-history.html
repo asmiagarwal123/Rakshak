@@ -1,1 +1,70 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RAKSHAK / Audit History</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="audit-history.css"></head><body><header class="audit-header"><a class="brand" href="index.html">RAKSHAK <span>// SAFETY INTELLIGENCE</span></a><nav><a data-route="commandCenter">COMMAND CENTER <i>↗</i></a><a data-route="safetyCase">ASSET SAFETY CASE <i>↗</i></a><a data-route="plantMap">PLANT MAP <i>↗</i></a><a class="active">AUDIT HISTORY <i>↗</i></a></nav><span class="nav-status" aria-live="polite"></span></header><main><section class="audit-title"><div><p class="eyebrow">APPEND-ONLY RECORD / EVENT RECORDER</p><h1>AUDIT <span>/ INCIDENT HISTORY</span></h1><p>Trace assessments, operator actions and system events through the append-only audit trail.</p></div><div class="feed-state"><b data-feed-state>AWAITING AUDIT DATA</b><span data-event-count>—</span></div></section><section class="audit-toolbar"><label>ASSET <select data-asset-filter><option value="">ALL ASSETS</option></select></label><label>EVENT TYPE <select data-type-filter><option value="">ALL EVENT TYPES</option></select></label><span class="mono" data-update-state>LIVE FEED PENDING</span></section><section class="recorder"><div class="recorder-head"><span>SAFETY EVENT REGISTER</span><span class="mono">NEWEST FIRST / READ ONLY</span></div><div class="timeline" data-timeline><div class="empty-state">AWAITING AUDIT EVENTS</div></div></section></main><script src="routes.js"></script><script src="audit-history.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>RAKSHAK / Audit History</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="audit-history.css">
+</head>
+<body data-audit-state="loading">
+  <header class="audit-header">
+    <a class="brand" href="index.html"><span class="brand-mark">R</span><b>RAKSHAK</b><small>SAFETY INTELLIGENCE</small></a>
+    <nav aria-label="Primary navigation">
+      <a data-route="commandCenter">COMMAND CENTER <i>↗</i></a>
+      <a data-route="safetyCase">ASSET SAFETY CASE <i>↗</i></a>
+      <a data-route="plantMap">PLANT MAP <i>↗</i></a>
+      <a class="active" aria-current="page">AUDIT HISTORY <i>↗</i></a>
+    </nav>
+    <a class="identity-badge" href="command-center.html" data-identity-state="unverified" aria-label="Manage active identity in Command Center">
+      <span>ACTIVE IDENTITY</span><strong data-active-user>SELECT USER IN COMMAND CENTER</strong><small data-active-role>IDENTITY REQUIRED</small>
+    </a>
+  </header>
+
+  <main>
+    <div class="system-rail" role="status" aria-live="polite">
+      <span data-feed-state>AWAITING AUDIT DATA</span>
+      <span data-update-state>NO AUDIT SNAPSHOT RECEIVED</span>
+    </div>
+
+    <section class="audit-title" aria-labelledby="audit-title">
+      <div>
+        <p class="eyebrow">APPEND-ONLY RECORD / SAFETY BLACK-BOX</p>
+        <h1 id="audit-title">AUDIT <span>/ INCIDENT HISTORY</span></h1>
+        <p>Trace assessments, operator actions and system events through the append-only audit trail.</p>
+      </div>
+      <dl class="audit-summary">
+        <div><dt>EVENTS LOADED</dt><dd data-total-count>—</dd></div>
+        <div><dt>VISIBLE EVENTS</dt><dd data-visible-count>—</dd></div>
+        <div><dt>RECORDER STATE</dt><dd data-recorder-state>AWAITING DATA</dd></div>
+      </dl>
+    </section>
+
+    <section class="recorder" aria-labelledby="recorder-title">
+      <header class="recorder-head">
+        <div><span>SAFETY EVENT REGISTER</span><h2 id="recorder-title">LIVE TECHNICAL EVENT RAIL</h2></div>
+        <span class="read-only-state"><i aria-hidden="true"></i> NEWEST FIRST / READ ONLY</span>
+      </header>
+
+      <div class="audit-toolbar" aria-label="Audit event filters">
+        <label><span>ASSET REFERENCE</span><select data-asset-filter><option value="">ALL ASSETS</option></select></label>
+        <label><span>EVENT TYPE</span><select data-type-filter><option value="">ALL EVENT TYPES</option></select></label>
+        <button type="button" data-clear-filters disabled>CLEAR FILTERS</button>
+        <span class="filter-state" data-filter-state>SHOWING ALL RECEIVED EVENTS</span>
+      </div>
+
+      <div class="recorder-scale" aria-hidden="true"><span>UTC / SOURCE TIMESTAMP</span><span>APPEND-ONLY EVENT CHANNEL</span></div>
+      <div class="timeline" data-timeline aria-live="polite" aria-busy="true">
+        <div class="timeline-state" data-timeline-state>
+          <i aria-hidden="true"></i><strong>AWAITING AUDIT EVENTS</strong><small>NO SAMPLE EVENTS INJECTED</small>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="routes.js"></script>
+  <script src="api.js"></script>
+  <script src="audit-history.js"></script>
+</body>
+</html>

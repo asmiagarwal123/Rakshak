@@ -1,1 +1,103 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RAKSHAK / Plant Map</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="plant-map.css"></head><body><header class="map-header"><a class="brand" href="index.html">RAKSHAK <span>// SAFETY INTELLIGENCE</span></a><nav><a data-route="commandCenter">COMMAND CENTER <i>↗</i></a><a data-route="safetyCase">ASSET SAFETY CASE <i>↗</i></a><a class="active">PLANT MAP <i>↗</i></a><a data-pending="AUDIT HISTORY">AUDIT HISTORY <i>↗</i></a></nav><span class="nav-status" aria-live="polite"></span></header><main><section class="map-title"><div><p class="eyebrow">SYSTEM VIEW / DEPENDENCY CONTEXT</p><h1>PLANT MAP <span>/ DEPENDENCIES</span></h1><p>Visualize asset relationships, current risk state, and downstream dependency context.</p></div><div class="map-state"><b data-assets-state>AWAITING ASSET DATA</b><span data-asset-count>—</span></div></section><section class="map-workspace"><div class="graph-panel"><div class="graph-toolbar"><span>LIVE INDUSTRIAL NETWORK</span><span class="mono" data-risk-state>RISK LINK PENDING</span><div class="graph-actions"><button data-fit>FIT VIEW</button><button data-zoom="in">+</button><button data-zoom="out">−</button></div></div><div class="graph-frame"><svg data-graph viewBox="0 0 1200 620" role="img" aria-label="Plant dependency network"><defs><pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#20262e" stroke-width="1"/></pattern><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8" fill="none" stroke="#596573" stroke-width="1.5"/></marker></defs><rect width="1200" height="620" fill="url(#grid)"/><g data-edges></g><g data-nodes></g></svg><div class="graph-empty" data-graph-empty>AWAITING ASSET DATA</div></div><div class="legend"><span><i class="dot low"></i>LOW</span><span><i class="dot medium"></i>MEDIUM</span><span><i class="dot high"></i>HIGH / CRITICAL</span><span><i class="selected-key"></i>SELECTED PATH</span></div></div><aside class="detail-panel"><div class="detail-head"><span>SELECTED ASSET</span><b data-detail-state>NO SELECTION</b></div><div data-detail><p class="detail-empty">Select an equipment module to inspect dependency context.</p></div></aside></section></main><script src="routes.js"></script><script src="api.js"></script><script src="plant-map.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>RAKSHAK / Plant Map</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="plant-map.css">
+</head>
+<body data-map-state="loading">
+  <header class="map-header">
+    <a class="brand" href="index.html"><span class="brand-mark">R</span><b>RAKSHAK</b><small>SAFETY INTELLIGENCE</small></a>
+    <nav aria-label="Primary navigation">
+      <a data-route="commandCenter">COMMAND CENTER <i>↗</i></a>
+      <a data-route="safetyCase">ASSET SAFETY CASE <i>↗</i></a>
+      <a class="active" aria-current="page">PLANT MAP <i>↗</i></a>
+      <a data-route="auditHistory">AUDIT HISTORY <i>↗</i></a>
+    </nav>
+    <a class="identity-badge" href="command-center.html" data-identity-state="unverified" aria-label="Manage active identity in Command Center">
+      <span>ACTIVE IDENTITY</span><strong data-active-user>SELECT USER IN COMMAND CENTER</strong><small data-active-role>IDENTITY REQUIRED</small>
+    </a>
+  </header>
+
+  <main>
+    <div class="system-rail" role="status" aria-live="polite">
+      <span data-system-state>AWAITING PLANT DEPENDENCY DATA</span>
+      <span data-refresh-state>NO ASSET SNAPSHOT RECEIVED</span>
+    </div>
+
+    <section class="map-title" aria-labelledby="map-title">
+      <div>
+        <p class="eyebrow">OPERATIONAL DEPENDENCY VIEW / SCHEMATIC COORDINATES</p>
+        <h1 id="map-title">PLANT MAP <span>/ DEPENDENCIES</span></h1>
+        <p>Select an API-returned asset to trace confirmed downstream impact.</p>
+      </div>
+      <dl class="map-summary">
+        <div><dt>ASSET NODES</dt><dd data-asset-count>—</dd></div>
+        <div><dt>CONFIRMED EDGES</dt><dd data-edge-count>—</dd></div>
+        <div><dt>TOPOLOGY STATE</dt><dd data-topology-summary>AWAITING DATA</dd></div>
+      </dl>
+    </section>
+
+    <section class="map-workspace" aria-label="Plant dependency workspace">
+      <section class="graph-panel" aria-labelledby="network-title">
+        <div class="graph-toolbar">
+          <div><span>LIVE INDUSTRIAL NETWORK</span><h2 id="network-title">DEPENDENCY SCHEMATIC</h2></div>
+          <span class="feed-state" data-risk-state>RISK LINK PENDING</span>
+          <div class="graph-actions" aria-label="Graph viewport controls">
+            <button type="button" data-fit aria-label="Fit dependency network">FIT</button>
+            <button type="button" data-zoom="in" aria-label="Zoom in">+</button>
+            <button type="button" data-zoom="out" aria-label="Zoom out">−</button>
+          </div>
+        </div>
+
+        <div class="graph-frame" data-graph-frame>
+          <svg data-graph viewBox="0 0 1200 620" role="group" aria-labelledby="graph-title graph-description">
+            <title id="graph-title">Plant dependency network</title>
+            <desc id="graph-description">Keyboard-accessible API-returned asset nodes connected by confirmed downstream dependency references. Diagram positions are schematic, not physical coordinates.</desc>
+            <defs>
+              <pattern id="plant-grid-minor" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="#252c34" stroke-width="1"/></pattern>
+              <pattern id="plant-grid-major" width="120" height="120" patternUnits="userSpaceOnUse"><rect width="120" height="120" fill="url(#plant-grid-minor)"/><path d="M120 0H0V120" fill="none" stroke="#303943" stroke-width="1"/></pattern>
+              <marker id="conduit-arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M1 1L8 4.5L1 8" fill="none" stroke="context-stroke" stroke-width="1.4"/></marker>
+              <filter id="selected-shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#6fe3ff" flood-opacity=".28"/></filter>
+              <symbol id="asset-generic" viewBox="0 0 48 48"><rect x="8" y="10" width="32" height="28" rx="2"/><path d="M14 17h20M14 24h20M14 31h12"/></symbol>
+              <symbol id="asset-tank" viewBox="0 0 48 48"><path d="M11 12c0-4 26-4 26 0v24c0 4-26 4-26 0z"/><path d="M11 12c0 4 26 4 26 0M11 31c0 4 26 4 26 0M17 40v4M31 40v4"/></symbol>
+              <symbol id="asset-pump" viewBox="0 0 48 48"><circle cx="22" cy="25" r="12"/><path d="M10 25H4M34 25h10M22 13V7M17 37l-3 6M27 37l3 6M18 20l11 5-11 5z"/></symbol>
+              <symbol id="asset-boiler" viewBox="0 0 48 48"><path d="M13 10h22v29H13zM17 6h14l4 4H13zM10 39h28M17 39v5M31 39v5"/><path d="M19 16v16M24 16v16M29 16v16"/></symbol>
+              <symbol id="asset-valve" viewBox="0 0 48 48"><path d="M7 17l17 8L7 33zM41 17l-17 8 17 8zM24 25V10M17 10h14M5 25h38"/></symbol>
+              <symbol id="asset-motor" viewBox="0 0 48 48"><rect x="8" y="13" width="29" height="24" rx="5"/><path d="M37 20h7v10h-7M14 18v14M20 18v14M26 18v14M8 32H4M12 37l-3 6M31 37l3 6"/></symbol>
+            </defs>
+            <rect width="1200" height="620" fill="#13181e"/>
+            <rect width="1200" height="620" fill="url(#plant-grid-major)" opacity=".66"/>
+            <g class="measurement-marks" aria-hidden="true"><path d="M34 42h55M34 42v55M1111 42h55M1166 42v55M34 523v55M34 578h55M1111 578h55M1166 523v55"/></g>
+            <g data-edges aria-hidden="true"></g>
+            <g data-nodes aria-label="Asset nodes"></g>
+          </svg>
+          <div class="graph-state" data-graph-state role="status" aria-live="polite">
+            <i aria-hidden="true"></i><strong>AWAITING PLANT DEPENDENCY DATA</strong><small>NO PLACEHOLDER NODES OR EDGES RENDERED</small>
+          </div>
+          <div class="canvas-note">SCHEMATIC LAYOUT / NOT PHYSICAL PLANT COORDINATES</div>
+        </div>
+
+        <div class="legend" aria-label="Plant Map legend">
+          <div class="legend-group"><strong>RISK STATE</strong><span><i class="risk-dot low"></i>LOW</span><span><i class="risk-dot medium"></i>MEDIUM</span><span><i class="risk-dot high"></i>HIGH</span><span><i class="risk-dot critical"></i>CRITICAL</span><span><i class="risk-dot unavailable"></i>UNAVAILABLE</span></div>
+          <div class="legend-group"><strong>NETWORK</strong><span><i class="edge-key"></i>API-CONFIRMED DEPENDENCY</span><span><i class="selection-key"></i>SELECTED ASSET</span><span><i class="downstream-key"></i>CONFIRMED DOWNSTREAM PATH</span></div>
+        </div>
+      </section>
+
+      <aside class="detail-panel" aria-labelledby="detail-title">
+        <div class="detail-head"><div><span>DEPENDENCY CONTEXT</span><h2 id="detail-title">SELECTED ASSET</h2></div><b data-detail-state>NO SELECTION</b></div>
+        <div data-detail class="detail-content">
+          <div class="detail-empty"><i aria-hidden="true"></i><strong>SELECT AN ASSET NODE</strong><p>Inspect confirmed downstream relationships without leaving the network.</p></div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script src="routes.js"></script>
+  <script src="api.js"></script>
+  <script src="plant-map.js"></script>
+</body>
+</html>

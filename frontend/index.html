@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0a0a0c" />
-    <title>RAKSHAK — Live industrial risk intelligence</title>
+    <title>RAKSHAK / RiskRadar — Industrial safety decision support</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -18,21 +18,21 @@
     <div class="grain" aria-hidden="true"></div>
     <header class="site-header" data-reveal="nav">
       <a class="brand" href="#top" aria-label="RAKSHAK home">
-        <span class="brand-mark">R</span><span>RAKSHAK</span>
+        <span class="brand-mark">R</span><span>RAKSHAK</span><small>/ RISKRADAR</small>
       </a>
-      <div class="header-status"><span class="status-dot" aria-hidden="true"></span> LIVE ASSET MONITORING <span class="header-index">/ 01</span></div>
+      <div class="header-status">SAFETY DECISION SUPPORT</div>
       <nav class="main-nav" aria-label="Operational pages"><a href="#" data-route="commandCenter">COMMAND CENTER <span>↗</span></a><a href="#" data-route="safetyCase">ASSET SAFETY CASE <span>↗</span></a><a href="#" data-route="plantMap">PLANT MAP <span>↗</span></a><a href="#" data-route="auditHistory">AUDIT HISTORY <span>↗</span></a></nav><span class="route-status" data-route-status role="status"></span>
     </header>
 
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy" data-reveal="copy">
-          <p class="eyebrow">Industrial risk intelligence <span>·</span> <span data-asset-context>AWAITING ASSET DATA</span></p>
+          <p class="eyebrow">Dairy pasteurization plant <span>·</span> <span data-asset-context>AWAITING ASSET DATA</span></p>
           <p class="hero-wordmark" aria-label="RAKSHAK">RAKSHAK</p><h1 id="hero-title">SEE THE DANGER<br /><em>BEFORE</em> IT HAPPENS.</h1>
-          <p class="hero-description">Industrial risk intelligence that observes live asset conditions, assesses risk, explains why, prioritizes attention, and supports preventive action.</p>
+          <p class="hero-description">RAKSHAK combines live equipment telemetry with maintenance history, inspection findings, and safety audits to identify which asset needs attention first, explain why, and support a traceable human decision.</p>
           <a class="primary-cta" href="#command-center" data-command-link>ENTER COMMAND CENTER <span aria-hidden="true">↗</span></a>
           <p class="cta-note" role="status" data-command-status></p>
-          <div class="hero-meta"><span data-telemetry-source>AWAITING TELEMETRY</span><span data-telemetry-status>TELEMETRY PENDING</span><span>PROTOTYPE DECISION SUPPORT</span></div>
+          <div class="hero-meta"><span data-telemetry-source>AWAITING TELEMETRY</span><span data-telemetry-status>TELEMETRY PENDING</span><span>EXPLAINABLE HYBRID PROTOTYPE RISK INDEX</span></div>
         </div>
 
         <div class="hero-visual" data-reveal="machine">
@@ -47,44 +47,51 @@
               </defs>
               <g class="machine-grid"><path d="M36 40H584M36 530H584M56 20V550M564 20V550" /><circle cx="310" cy="288" r="214" /><circle cx="310" cy="288" r="186" /></g>
               <g class="boiler"><path class="machine-outline" d="M185 164Q185 112 238 112H382Q435 112 435 164V405Q435 458 382 458H238Q185 458 185 405Z" /><path class="machine-inner" d="M214 185H406V382H214Z" /><path class="machine-cap" d="M185 164H435M185 405H435" /><path class="pipe" d="M238 112V70H137V154M382 112V70H483V154M137 154V262H92V392H185M483 154V262H528V392H435" /><path class="pipe thin" d="M310 112V46M92 392H58M528 392H562" /><path class="flow" d="M214 250H406M214 290H406M214 330H406" /><path class="gauge" d="M310 203v52M284 229h52" /><circle class="sensor-halo" cx="406" cy="290" r="32" /><circle class="sensor" cx="406" cy="290" r="6" /></g>
-              <g class="machine-labels"><text x="310" y="518" text-anchor="middle" data-asset-name>AWAITING ASSET</text><text x="310" y="540" text-anchor="middle" class="sub">LIVE TELEMETRY / AWAITING STATE</text><text x="444" y="286" class="sub sensor-label">TEMP SENSOR</text></g>
+              <g class="machine-labels"><text x="310" y="518" text-anchor="middle" data-asset-name>AWAITING ASSET</text><text x="310" y="540" text-anchor="middle" class="sub">EQUIPMENT TELEMETRY / AWAITING STATE</text><text x="444" y="286" class="sub sensor-label">LOCAL THERMAL CHANNEL</text></g>
               <path class="telemetry-path" d="M406 290 C470 250 470 110 548 90" /><circle class="telemetry-pulse" r="5"><animateMotion dur="2.4s" repeatCount="indefinite" path="M406 290 C470 250 470 110 548 90" /></circle>
             </svg>
             <div class="telemetry-readout" data-reveal="panel">
               <span class="readout-label">LIVE TELEMETRY</span>
-              <strong data-risk-score>—</strong><span class="readout-denom">/ 100</span><b data-risk-level>AWAITING</b>
+              <strong data-risk-score>—</strong><b data-risk-level>AWAITING</b>
               <small data-telemetry-source>AWAITING TELEMETRY</small>
             </div>
           </div>
         </div>
       </section>
 
+      <section class="decision-brief" aria-label="Industrial safety problem and RAKSHAK response">
+        <article><span>THE PROBLEM</span><p>Industrial safety is often reactive, while operators must reconcile changing equipment conditions with fragmented maintenance, inspection, and audit evidence.</p></article>
+        <i aria-hidden="true">→</i>
+        <article><span>THE RAKSHAK RESPONSE</span><p>One explainable decision-support flow connects evidence to prototype risk, inspection priority, a traceable recommendation, deterministic validation, and human action.</p></article>
+      </section>
+      <div class="capability-rail" aria-label="Documented RAKSHAK capabilities"><span>LIVE ASSET MONITORING</span><span>RISK TRAJECTORY</span><span>EXPLAINABLE FACTOR EVIDENCE</span><span>SOP-GROUNDED RECOMMENDATIONS</span><span>DETERMINISTIC SAFETY VALIDATION</span><span>INTERVENTION SCENARIOS</span><span>APPEND-ONLY AUDIT TRAIL</span></div>
+
       <section class="observe" id="observe" aria-labelledby="observe-title">
         <div class="observe-path" aria-hidden="true"><span></span><i></i><b></b></div>
         <div class="observe-copy" data-observe-reveal>
           <p class="section-marker"><span>01</span> / OBSERVE</p>
           <h2 id="observe-title">LIVE CONDITIONS.<br /><em>CONTINUOUSLY VISIBLE.</em></h2>
-          <p class="observe-description">Live telemetry gives RAKSHAK the current operating state of the active asset before risk is assessed.</p>
-          <div class="asset-signature"><span class="status-dot"></span><span data-asset-name>AWAITING ASSET</span><small><span data-asset-id>—</span> / <span data-asset-location>AWAITING LOCATION</span></small></div><a class="section-cta" href="#" data-route="commandCenter">VIEW LIVE COMMAND CENTER <span>→</span></a>
+          <p class="observe-description">RAKSHAK observes live equipment conditions alongside maintenance history, inspection findings, and safety-audit evidence. DHT11 data is treated only as local equipment-environment or enclosure thermal telemetry.</p>
+          <div class="asset-signature"><span data-asset-name>AWAITING ASSET</span><small><span data-asset-id>—</span> / <span data-asset-location>AWAITING LOCATION</span></small></div><a class="section-cta" href="#" data-route="commandCenter">VIEW LIVE COMMAND CENTER <span>→</span></a>
         </div>
         <div class="telemetry-composition" data-observe-reveal>
           <div class="telemetry-card">
-            <div class="telemetry-card-head"><span>ACTIVE TELEMETRY</span><b><i class="status-dot"></i> LINKED</b></div>
+            <div class="telemetry-card-head"><span>LOCAL EQUIPMENT-ENVIRONMENT TELEMETRY</span><b data-telemetry-status>TELEMETRY PENDING</b></div>
             <div class="temperature-reading"><strong data-temperature>—</strong><span>°C<small>TEMPERATURE</small></span></div>
             <div class="temperature-state"><span class="state-dot"></span> <span data-temperature-state>AWAITING</span></div>
             <div class="telemetry-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-            <div class="telemetry-details"><span>HUMIDITY <strong data-humidity>—</strong></span><span>SOURCE <strong data-telemetry-source>AWAITING</strong></span></div>
-            <div class="telemetry-update">LAST UPDATE <strong data-last-update>--:--:--</strong></div>
+            <div class="telemetry-details"><span>HUMIDITY <strong data-humidity>—</strong></span><span>LOCAL THERMAL SOURCE <strong data-telemetry-source>AWAITING</strong></span></div>
+            <div class="telemetry-update">LAST UPDATE <strong data-last-update>—</strong></div>
           </div>
           <div class="signal-rail" aria-hidden="true"><span class="signal-node"></span><span class="packet packet-one"></span><span class="packet packet-two"></span></div>
         </div>
         <nav class="product-spine" aria-label="RAKSHAK product spine"><span class="active">OBSERVE</span><i>→</i><span>ASSESS</span><i>→</i><span>EXPLAIN</span><i>→</i><span>PRIORITIZE</span><i>→</i><span>PREVENT</span></nav>
       </section>
       <section class="assess" id="assess" aria-labelledby="assess-title">
-        <div class="assess-copy" data-assess-reveal><p class="section-marker"><span>02</span> / ASSESS</p><h2 id="assess-title">RISK, BROKEN DOWN.<br /><em>NOT HIDDEN.</em></h2><p class="observe-description">RAKSHAK combines live conditions with asset history and an ML anomaly signal into an explainable prototype risk index.</p><div class="assess-note">PROTOTYPE RISK INDEX / AWAITING BACKEND ASSESSMENT</div><a class="section-cta" href="#" data-route="safetyCase">OPEN ASSET SAFETY CASE <span>→</span></a></div>
+        <div class="assess-copy" data-assess-reveal><p class="section-marker"><span>02</span> / ASSESS</p><h2 id="assess-title">RISK, BROKEN DOWN.<br /><em>NOT HIDDEN.</em></h2><p class="observe-description">The backend combines deterministic rules, temporal trend, and an IsolationForest anomaly signal into an explainable hybrid prototype risk index. It is decision support, not a prediction of future events.</p><div class="assess-note">PROTOTYPE RISK INDEX / AWAITING BACKEND ASSESSMENT</div><a class="section-cta" href="#" data-route="safetyCase">OPEN ASSET SAFETY CASE <span>→</span></a></div>
         <div class="assess-visual" data-assess-reveal>
           <div class="risk-gauge" data-risk-gauge><svg viewBox="0 0 360 300" aria-label="Radial prototype risk index gauge"><path class="gauge-track" d="M45 245 A135 135 0 1 1 315 245" /><path class="gauge-band gauge-low" d="M45 245 A135 135 0 0 1 92 123" /><path class="gauge-band gauge-medium" d="M92 123 A135 135 0 0 1 180 110" /><path class="gauge-band gauge-high" d="M180 110 A135 135 0 0 1 268 123" /><path class="gauge-band gauge-critical" d="M268 123 A135 135 0 0 1 315 245" /><line class="gauge-needle" data-gauge-needle x1="180" y1="245" x2="180" y2="115" /><circle cx="180" cy="245" r="8" class="gauge-hub" /></svg><div class="gauge-center"><strong data-assess-score>—</strong><span data-assess-level>AWAITING</span><small>PROTOTYPE RISK INDEX</small></div><div class="gauge-legend"><span>LOW</span><span>MEDIUM</span><span>HIGH</span><span>CRITICAL</span></div></div>
-          <div class="factor-manifest"><div class="manifest-head"><span>CONTRIBUTING FACTORS</span><span>BACKEND EVIDENCE</span></div><div class="factor-rows" data-factor-rows><div class="awaiting-data">Awaiting backend factors[]</div></div><div class="factor-total"><span>TOTAL CONTRIBUTION</span><strong data-factor-sum>—</strong><small data-factor-check>AWAITING VERIFICATION</small></div><div class="instrument-grid"><div><span>ML ANOMALY SIGNAL</span><strong data-ml-status>AWAITING</strong></div><div><span>TREND</span><strong data-trend-state>AWAITING</strong></div></div></div>
+          <div class="factor-manifest"><div class="manifest-head"><span>CONTRIBUTING FACTORS</span><span>BACKEND EVIDENCE</span></div><div class="factor-rows" data-factor-rows><div class="awaiting-data">Awaiting backend factors[]</div></div><div class="factor-total"><span>BACKEND-SUPPLIED CONTRIBUTIONS</span><small>NO FRONTEND RISK CALCULATION</small></div><div class="instrument-grid"><div><span>ML ANOMALY SIGNAL</span><strong data-ml-status>AWAITING</strong></div><div><span>TEMPORAL TREND</span><strong data-trend-state>AWAITING</strong></div></div></div>
         </div>
         <nav class="product-spine assess-spine" aria-label="RAKSHAK product spine"><span class="completed">OBSERVE</span><i>→</i><span class="active">ASSESS</span><i>→</i><span>EXPLAIN</span><i>→</i><span>PRIORITIZE</span><i>→</i><span>PREVENT</span></nav>
       </section>
@@ -93,22 +100,23 @@
         <section class="evidence-workstation" aria-label="Traceable backend evidence" data-explain-reveal>
           <div class="evidence-workstation-head"><span>BACKEND EXPLANATION / TRACEABLE EVIDENCE</span><small>DATA LINK / AWAITING</small></div>
           <div class="evidence-flow" aria-label="Evidence trace: source, factor, contribution, risk">
-            <div class="evidence-flow-step"><i>01</i><span>SOURCE</span></div><b class="evidence-flow-connector" aria-hidden="true"></b>
-            <div class="evidence-flow-step"><i>02</i><span>FACTOR</span></div><b class="evidence-flow-connector" aria-hidden="true"></b>
-            <div class="evidence-flow-step"><i>03</i><span>CONTRIBUTION</span></div><b class="evidence-flow-connector" aria-hidden="true"></b>
-            <div class="evidence-flow-step"><i>04</i><span>RISK</span></div>
+            <div class="evidence-flow-step"><i>S</i><span>SOURCE</span></div><b class="evidence-flow-connector" aria-hidden="true"></b>
+            <div class="evidence-flow-step"><i>F</i><span>FACTOR</span></div><b class="evidence-flow-connector" aria-hidden="true"></b>
+            <div class="evidence-flow-step"><i>C</i><span>CONTRIBUTION</span></div><b class="evidence-flow-connector" aria-hidden="true"></b>
+            <div class="evidence-flow-step"><i>R</i><span>RISK</span></div>
           </div>
           <div class="explain-statement"><div class="evidence-section-head"><span>EXPLANATION</span><small>AWAITING BACKEND EXPLANATION</small></div><p data-explanation>Awaiting backend explanation.</p><div class="statement-signature"><span>RISK INDEX</span><strong data-explain-score>—</strong><b data-explain-level>AWAITING</b></div></div>
           <div class="evidence-lower">
             <div class="evidence-stack"><div class="evidence-section-head evidence-stack-head"><span>FACTOR / SOURCE</span><span>CONTRIBUTION</span></div><div data-explain-factors><div class="awaiting-data">AWAITING FACTOR EVIDENCE</div></div></div>
             <aside class="confidence-rail"><div class="evidence-section-head"><span>CONFIDENCE</span><small>AWAITING DETAIL</small></div><strong data-confidence-score>—</strong><p data-confidence-reason>Awaiting backend confidence detail.</p><div class="confidence-channels"><span>PRESENT</span><b data-confidence-present>—</b><span>MISSING</span><b data-confidence-missing>—</b></div><div class="warning-list" data-data-warnings></div></aside>
           </div>
+          <div class="trust-rail" aria-label="RAKSHAK trust principles"><span>EXPLAINABLE TO THE FACTOR</span><span>SAFETY-GATED</span><span>HONEST CONFIDENCE</span><span>CALIBRATED HUMILITY</span></div>
         </section>
         <nav class="product-spine explain-spine" aria-label="RAKSHAK product spine"><span class="completed">OBSERVE</span><i>→</i><span class="completed">ASSESS</span><i>→</i><span class="active">EXPLAIN</span><i>→</i><span>PRIORITIZE</span><i>→</i><span>PREVENT</span></nav>
       </section>
       <section class="prioritize" id="prioritize" aria-labelledby="prioritize-title">
-        <div class="prioritize-copy" data-prioritize-reveal><p class="section-marker"><span>04</span> / PRIORITIZE</p><h2 id="prioritize-title">KNOW WHERE<br /><em>TO ACT FIRST.</em></h2><p class="observe-description">RAKSHAK continuously ranks monitored assets by inspection priority so operators can focus attention where it matters most.</p><div class="queue-status"><span class="status-dot"></span><span data-priority-status>AWAITING PRIORITY DATA</span></div><a class="section-cta" href="#" data-route="commandCenter">VIEW PRIORITY QUEUE <span>→</span></a></div>
-        <div class="priority-queue" data-prioritize-reveal><div class="priority-queue-head"><span>INSPECTION QUEUE</span><span>BACKEND RANKING / LIVE</span></div><div class="priority-rows" data-priority-rows><div class="awaiting-data">Awaiting /api/priorities</div></div></div>
+        <div class="prioritize-copy" data-prioritize-reveal><p class="section-marker"><span>04</span> / PRIORITIZE</p><h2 id="prioritize-title">KNOW WHERE<br /><em>TO ACT FIRST.</em></h2><p class="observe-description">Backend-returned inspection priority orders monitored assets so operators can focus attention where the available evidence indicates it is needed first.</p><div class="queue-status"><span data-priority-status>AWAITING PRIORITY DATA</span></div><a class="section-cta" href="#" data-route="commandCenter">VIEW PRIORITY QUEUE <span>→</span></a></div>
+        <div class="priority-queue" data-prioritize-reveal><div class="priority-queue-head"><span>INSPECTION QUEUE</span><span>BACKEND PRIORITY OUTPUT / AWAITING</span></div><div class="priority-rows" data-priority-rows><div class="awaiting-data">Awaiting /api/priorities</div></div></div>
         <nav class="product-spine prioritize-spine" aria-label="RAKSHAK product spine"><span class="completed">OBSERVE</span><i>→</i><span class="completed">ASSESS</span><i>→</i><span class="completed">EXPLAIN</span><i>→</i><span class="active">PRIORITIZE</span><i>→</i><span>PREVENT</span></nav>
       </section>
       <section class="prevent" id="prevent" aria-labelledby="prevent-title">
@@ -116,10 +124,10 @@
         <div class="prevent-pipeline" data-prevent-reveal>
           <div class="prevent-stage recommendation-stage"><span class="stage-label">RECOMMENDED ACTION</span><strong data-recommendation-action>Awaiting backend recommendation.</strong></div><i class="pipeline-arrow">→</i>
           <div class="prevent-stage sop-stage"><span class="stage-label">SOP PROVENANCE</span><strong data-sop-title>Awaiting provenance</strong><small><span data-sop-doc>—</span> <span data-sop-section></span> <span data-sop-version></span></small></div><i class="pipeline-arrow">→</i>
-          <div class="prevent-stage validator-stage" data-validator-state="pending"><span class="stage-label">SAFETY VALIDATOR</span><strong data-validator-result>AWAITING</strong><small data-validator-rule>Awaiting backend validation</small></div><i class="pipeline-arrow">→</i>
-          <div class="prevent-stage operator-stage"><span class="stage-label">HUMAN OPERATOR</span><strong>HUMAN DECISION REQUIRED</strong><div class="operator-actions"><button type="button" disabled>ACK</button><button type="button" disabled>ASSIGN</button><button type="button" disabled>DISMISS</button></div></div>
+          <div class="prevent-stage validator-stage" data-validator-state="pending"><span class="stage-label">DETERMINISTIC SAFETY VALIDATION</span><strong data-validator-result>AWAITING BACKEND VALIDATION</strong><small data-validator-rule>No frontend validator outcome</small></div><i class="pipeline-arrow">→</i>
+          <div class="prevent-stage operator-stage"><span class="stage-label">HUMAN ACTION</span><strong>HUMAN DECISION REQUIRED</strong><small>Acknowledge, assign, dismiss, or proceed only after review.</small></div>
         </div>
-        <div class="intervention-panel" data-prevent-reveal><div class="intervention-head"><div><span class="stage-label">INTERVENTION SIMULATION</span><strong>Recompute the prototype risk index after the selected intervention.</strong></div><button type="button" class="simulate-button" data-simulate>SIMULATE INTERVENTION <span>→</span></button></div><p class="simulation-status" data-simulation-status></p><div class="before-after"><div><span class="stage-label">CURRENT STATE</span><strong data-before-score>—</strong><b data-before-level>AWAITING</b></div><i>→</i><div><span class="stage-label">RECOMPUTED STATE</span><strong data-after-score>—</strong><b data-after-level>AWAITING</b></div></div><div class="changed-factors" data-changed-factors></div><p class="scenario-note" data-simulation-note></p></div>
+        <div class="intervention-panel intervention-concept" data-prevent-reveal><div class="intervention-head"><div><span class="stage-label">DEFINED INTERVENTION SCENARIO</span><strong>Review a backend-returned before-and-after prototype risk state.</strong></div><span class="concept-state">SAFETY CASE REQUIRED</span></div><div class="scenario-path"><span>RECOMMENDATION</span><i>→</i><span>DETERMINISTIC VALIDATION</span><i>→</i><span>HUMAN ACTION</span><i>→</i><span>SCENARIO RESOLUTION</span></div><p class="scenario-note">The landing page does not simulate, validate, or recompute risk. Those results are shown only when returned by the operational safety-case workflow.</p></div>
         <nav class="product-spine prevent-spine" aria-label="RAKSHAK product spine"><span class="completed">OBSERVE</span><i>→</i><span class="completed">ASSESS</span><i>→</i><span class="completed">EXPLAIN</span><i>→</i><span class="completed">PRIORITIZE</span><i>→</i><span class="active">PREVENT</span></nav>
         <div class="landing-close"><p>RAKSHAK</p><h3>SEE THE DANGER<br /><em>BEFORE IT HAPPENS.</em></h3><a class="primary-cta" href="#command-center" data-command-link>ENTER COMMAND CENTER <span aria-hidden="true">↗</span></a></div>
       </section>

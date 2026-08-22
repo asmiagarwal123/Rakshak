@@ -1,9 +1,210 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RAKSHAK / Asset Safety Case</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="asset-safety-case.css"></head>
-<body><header class="case-header"><a class="brand" href="index.html">RAKSHAK <span>// SAFETY INTELLIGENCE</span></a><nav><a data-route="commandCenter">COMMAND CENTER <i>↗</i></a><a class="active">ASSET SAFETY CASE <i>↗</i></a><a data-pending="PLANT MAP">PLANT MAP <i>↗</i></a><a data-pending="AUDIT HISTORY">AUDIT HISTORY <i>↗</i></a></nav><span class="nav-status" aria-live="polite"></span></header>
-<main><section class="case-title"><div><p class="eyebrow">OPERATIONAL RECORD / <span data-asset-id>AWAITING ASSET SELECTION</span></p><h1 data-asset-name>ASSET SAFETY CASE</h1><p data-asset-type>AWAITING ASSET IDENTITY</p></div><div class="identity-grid"><span>LOCATION <b data-asset-location>—</b></span><span>CRITICALITY <b data-asset-criticality>—</b></span><span>CASE STATUS <b data-asset-level>AWAITING DATA</b></span></div></section>
-<div class="layout"><div class="primary"><section class="panel risk-panel"><div class="panel-head"><span>RISK INDEX / CURRENT</span><span class="live"><i></i><b data-risk-state>LINK PENDING</b></span></div><div class="gauge-wrap"><svg viewBox="0 0 360 260" class="gauge" role="img" aria-label="Current risk index"><path class="gauge-track" d="M50 220 A130 130 0 1 1 310 220"/><path class="gauge-band green" d="M50 220 A130 130 0 0 1 101 115"/><path class="gauge-band amber" d="M101 115 A130 130 0 0 1 259 115"/><path class="gauge-band red" d="M259 115 A130 130 0 0 1 310 220"/><line class="needle" data-needle x1="180" y1="220" x2="180" y2="92"/><circle cx="180" cy="220" r="7"/><text x="180" y="177" text-anchor="middle" class="gauge-score" data-score>—</text><text x="180" y="198" text-anchor="middle" class="gauge-unit">/ 100</text></svg><div class="gauge-legend"><span>0 / LOW</span><span>30 / WATCH</span><span>38 / ELEVATED</span><span>45+ / HIGH</span><span>100</span></div></div><div class="metric-strip"><span>PRIORITY <b data-priority>—</b></span><span>RULE FIRED <b data-rule>—</b></span><span>UPDATED <b data-updated>—</b></span></div></section>
-<section class="panel"><div class="panel-head"><span>LIVE TELEMETRY</span><span class="mono" data-telemetry-state>AWAITING STREAM</span></div><div class="telemetry-grid"><div><small>TEMPERATURE</small><strong data-temperature>—</strong><em>°C</em></div><div><small>SOURCE</small><strong data-source>—</strong></div><div><small>LAST SAMPLE</small><strong data-sample-time>—</strong></div></div><div class="chart-shell"><svg viewBox="0 0 760 250" preserveAspectRatio="none" aria-label="Temperature trajectory"><line x1="0" y1="185" x2="760" y2="185" class="threshold normal"/><line x1="0" y1="129" x2="760" y2="129" class="threshold warning"/><line x1="0" y1="80" x2="760" y2="80" class="threshold unsafe"/><path data-trajectory class="trajectory" d=""/></svg><div class="chart-labels"><span>30°C / NORMAL</span><span>38°C / WARNING</span><span>45°C / UNSAFE</span></div><p data-chart-empty>NO TELEMETRY POINTS RETURNED</p></div></section></div>
-<aside class="secondary"><section class="panel"><div class="panel-head"><span>RISK MANIFEST</span><span class="mono" data-factor-sum>SUM — / SCORE —</span></div><div data-factors class="factor-list"><p class="muted">AWAITING FACTOR MANIFEST</p></div></section><section class="panel"><div class="panel-head"><span>WHY THIS SCORE</span><span class="mono">EXPLANATION</span></div><p class="explanation" data-explanation>Awaiting backend explanation.</p></section><section class="panel split"><div><span class="eyebrow">CONFIDENCE</span><b data-confidence>—</b><p data-confidence-detail>Awaiting confidence detail.</p></div><div><span class="eyebrow">ML ANOMALY</span><b data-ml-state>—</b><p data-ml-detail>Awaiting anomaly result.</p></div></section></aside></div>
-<section class="lower-grid"><section class="panel"><div class="panel-head"><span>EVIDENCE PROVENANCE</span><span class="mono">SOURCE SEPARATION</span></div><div class="evidence-columns"><div><h3>INSPECTION</h3><ul data-inspection><li>NO INSPECTION EVIDENCE RETURNED</li></ul></div><div><h3>SAFETY AUDIT</h3><ul data-audit><li>NO SAFETY-AUDIT EVIDENCE RETURNED</li></ul></div></div><div class="trend-row"><span>TREND <b data-trend-state>—</b></span><span>Δ5M <b data-temp-delta>—</b></span><span>VELOCITY <b data-velocity>—</b></span><span>POINTS <b data-trend-points>—</b></span></div><div class="warnings" data-warnings hidden></div></section><section class="panel"><div class="panel-head"><span>RECOMMENDATION / VALIDATION</span><span class="mono" data-validation-state>AWAITING VALIDATION</span></div><h2 data-recommendation>Awaiting recommendation.</h2><p class="muted" data-recommendation-source>—</p><div class="validator" data-validator>BACKEND VALIDATION PENDING</div><div class="sop"><span>SOP PROVENANCE</span><b data-sop>—</b></div></section></section>
-<section class="operational-grid"><section class="panel"><div class="panel-head"><span>DEPENDENCY IMPACT</span><span class="mono" data-dependency-count>—</span></div><p data-dependency-impact>Awaiting dependency assessment.</p><div class="dependency-list" data-dependencies></div></section><section class="panel"><div class="panel-head"><span>OPERATOR ACTION</span><span class="mono" data-action-status>ACTOR + REASON REQUIRED</span></div><div class="action-form"><input data-actor placeholder="ACTOR ID" aria-label="Actor ID"><input data-reason placeholder="REASON" aria-label="Action reason"><div><button data-action="ACK">ACKNOWLEDGE</button><button data-action="ASSIGN">ASSIGN INSPECTION</button><button data-action="DISMISS">DISMISS</button></div></div></section><section class="panel"><div class="panel-head"><span>INTERVENTION SIMULATOR</span><span class="mono">BACKEND PREVIEW</span></div><p class="muted">Submit a backend simulation to compare returned before/after state.</p><button class="primary-action" data-simulate>SIMULATE INSPECT SERVICE</button><div class="simulation-result" data-simulation>NO SIMULATION RUN</div></section></section></main><script src="routes.js"></script><script src="api.js"></script><script src="asset-safety-case.js"></script></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>RAKSHAK / Asset Safety Case</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="asset-safety-case.css">
+</head>
+<body data-case-state="loading">
+  <header class="case-header">
+    <a class="brand" href="index.html"><span class="brand-mark">R</span><b>RAKSHAK</b><small>SAFETY INTELLIGENCE</small></a>
+    <nav aria-label="Primary navigation">
+      <a data-route="commandCenter">COMMAND CENTER <i>↗</i></a>
+      <a class="active" aria-current="page">ASSET SAFETY CASE <i>↗</i></a>
+      <a data-route="plantMap">PLANT MAP <i>↗</i></a>
+      <a data-route="auditHistory">AUDIT HISTORY <i>↗</i></a>
+    </nav>
+    <a class="identity-badge" href="command-center.html" data-identity-state="unverified" aria-label="Manage active identity in Command Center">
+      <span>ACTIVE IDENTITY</span><strong data-active-user>SELECT USER IN COMMAND CENTER</strong><small data-active-role>IDENTITY REQUIRED</small>
+    </a>
+  </header>
+
+  <main>
+    <div class="case-status-rail" role="status" aria-live="polite">
+      <span data-system-state>CONNECTING TO SAFETY INTELLIGENCE</span>
+      <span data-refresh-state>AWAITING FIRST ASSESSMENT</span>
+    </div>
+
+    <section class="case-title" aria-labelledby="case-title">
+      <div>
+        <p class="eyebrow">ENGINEERING SAFETY DOSSIER / <span data-asset-id>SELECT AN ASSET</span></p>
+        <h1 id="case-title" data-asset-name>ASSET SAFETY CASE</h1>
+        <p class="asset-subtitle"><span data-asset-type>AWAITING ASSET IDENTITY</span><i aria-hidden="true">/</i><span data-asset-location>—</span></p>
+      </div>
+      <dl class="identity-grid">
+        <div><dt>ASSET STATUS</dt><dd data-asset-status>—</dd></div>
+        <div><dt>CRITICALITY</dt><dd data-asset-criticality>—</dd></div>
+        <div><dt>CASE STATE</dt><dd data-asset-level>AWAITING DATA</dd></div>
+      </dl>
+    </section>
+
+    <section class="selection-state" data-selection-state hidden>
+      <span>NO ASSET CONTEXT</span>
+      <h2>SELECT AN ASSET</h2>
+      <p>Open this dossier from an API-returned asset in Command Center, Inspector Queue, or Plant Map.</p>
+      <a href="command-center.html">OPEN COMMAND CENTER →</a>
+    </section>
+
+    <div class="dossier-layout" data-dossier>
+      <div class="instrument-column">
+        <section class="panel risk-panel" data-section="risk" data-state="loading" aria-labelledby="risk-title">
+          <div class="panel-head"><div><span>MASTER RISK OBJECT / CURRENT</span><h2 id="risk-title">PROTOTYPE RISK INDEX</h2></div><span class="state-label" data-risk-state>LOADING</span></div>
+          <div class="gauge-stage">
+            <div class="gauge-housing">
+              <svg viewBox="0 0 420 350" class="hero-gauge" role="img" aria-labelledby="gauge-title gauge-description">
+                <title id="gauge-title">Prototype risk index</title>
+                <desc id="gauge-description" data-gauge-description>Risk score unresolved.</desc>
+                <path class="gauge-track" pathLength="100" d="M72 279 A150 150 0 1 1 348 279"/>
+                <path class="gauge-signal" pathLength="100" data-gauge-progress d="M72 279 A150 150 0 1 1 348 279"/>
+                <g class="gauge-ticks" aria-hidden="true">
+                  <path d="M72 279l18-8M72 141l18 8M210 61v20M348 141l-18 8M348 279l-18-8"/>
+                  <path class="minor" d="M94 220l11-2M117 166l10 5M161 91l6 11M259 91l-6 11M303 166l-10 5M326 220l-11-2"/>
+                </g>
+                <g class="needle-group" data-needle aria-hidden="true"><path class="needle" d="M202 282L210 104L218 282Z"/><circle cx="210" cy="279" r="18"/><circle class="needle-pin" cx="210" cy="279" r="7"/></g>
+                <text x="210" y="213" text-anchor="middle" class="gauge-score" data-score>—</text>
+                <text x="210" y="238" text-anchor="middle" class="gauge-unit">RISK INDEX / 100</text>
+                <text x="210" y="326" text-anchor="middle" class="gauge-level" data-gauge-level>UNRESOLVED</text>
+              </svg>
+              <div class="dial-screw screw-a" aria-hidden="true"></div><div class="dial-screw screw-b" aria-hidden="true"></div>
+            </div>
+            <div class="risk-readout">
+              <span>CURRENT ASSESSMENT</span>
+              <strong data-summary-level>—</strong>
+              <dl><div><dt>SCORE</dt><dd data-summary-score>—</dd></div><div><dt>PRIORITY</dt><dd data-priority>—</dd></div></dl>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel telemetry-panel" data-section="telemetry" data-state="loading" aria-labelledby="telemetry-title">
+          <div class="panel-head"><div><span>LIVE LOCAL TELEMETRY</span><h2 id="telemetry-title">LOCAL EQUIPMENT-ENVIRONMENT THERMAL TELEMETRY</h2></div><span class="state-label" data-telemetry-state>LOADING</span></div>
+          <div class="telemetry-instruments">
+            <div class="temperature-instrument"><span>TEMPERATURE</span><strong data-temperature>—</strong><small data-temperature-unit>°C</small></div>
+            <dl class="telemetry-details">
+              <div><dt>HUMIDITY</dt><dd data-humidity>—</dd></div>
+              <div><dt>PRESSURE</dt><dd data-pressure>—</dd></div>
+              <div><dt>SOURCE</dt><dd data-source>—</dd></div>
+              <div><dt>LAST SAMPLE</dt><dd data-sample-time>—</dd></div>
+            </dl>
+          </div>
+          <div class="provenance-strip"><span data-simulation-state>PROVENANCE UNRESOLVED</span><span data-stale-detail>AWAITING HEALTH STATE</span></div>
+        </section>
+
+        <section class="panel trend-panel" data-section="trend" data-state="loading" aria-labelledby="trend-title">
+          <div class="panel-head"><div><span>BACKEND-DERIVED DIRECTION</span><h2 id="trend-title">CURRENT RISK TREND</h2></div><span class="state-label" data-trend-state>LOADING</span></div>
+          <div class="trend-vector" aria-hidden="true"><i data-trend-vector></i></div>
+          <dl class="trend-metrics">
+            <div><dt>STATE</dt><dd data-trend-value>—</dd></div>
+            <div><dt>TEMP Δ 5</dt><dd data-temp-delta>—</dd></div>
+            <div><dt>VELOCITY SCORE</dt><dd data-velocity>—</dd></div>
+            <div><dt>TREND POINTS</dt><dd data-trend-points>—</dd></div>
+          </dl>
+          <p class="section-note">Direction and velocity are rendered exactly from the master risk response. No frontend slope or risk-history calculation is used.</p>
+        </section>
+
+      </div>
+
+      <aside class="case-column">
+        <section class="panel factor-panel" data-section="factors" data-state="loading" aria-labelledby="factors-title">
+          <div class="panel-head"><div><span>DETERMINISTIC EVIDENCE MANIFEST</span><h2 id="factors-title">WHY THIS ASSET IS AT RISK</h2></div><span class="state-label" data-factor-state>LOADING</span></div>
+          <div class="factor-head" aria-hidden="true"><span>FACTOR / SOURCE</span><span>VALUE</span><span>THRESHOLD</span><span>CONTRIBUTION</span></div>
+          <div class="factor-list" data-factors><p class="empty-copy">AWAITING FACTOR MANIFEST</p></div>
+          <div class="factor-total"><span>TOTAL / RISK SCORE</span><strong data-factor-score>—</strong></div>
+        </section>
+
+        <section class="panel explanation-panel" data-section="explanation" data-state="loading" aria-labelledby="explanation-title">
+          <div class="panel-head"><div><span>BACKEND-GENERATED / DETERMINISTIC</span><h2 id="explanation-title">ASSESSMENT EXPLANATION</h2></div></div>
+          <blockquote data-explanation>AWAITING BACKEND EXPLANATION</blockquote>
+          <div class="warning-stack" data-warnings hidden></div>
+        </section>
+
+        <section class="evidence-grid" aria-label="Evidence provenance">
+          <article class="panel evidence-panel" data-section="inspection" data-state="blocked">
+            <div class="panel-head"><div><span>PROVENANCE RECORD 01</span><h2>INSPECTION EVIDENCE</h2></div><span class="state-label">CONTRACT BLOCKED</span></div>
+            <p>Separate inspection-record fields are not exposed by the verified master risk contract. Related factor provenance remains visible in the factor manifest.</p>
+          </article>
+          <article class="panel evidence-panel" data-section="audit" data-state="blocked">
+            <div class="panel-head"><div><span>PROVENANCE RECORD 02</span><h2>SAFETY AUDIT EVIDENCE</h2></div><span class="state-label">CONTRACT BLOCKED</span></div>
+            <p>Separate safety-audit record fields are not exposed by the verified master risk contract. No record has been inferred or fabricated.</p>
+          </article>
+        </section>
+
+        <section class="panel assessment-quality" aria-labelledby="quality-title">
+          <div class="panel-head"><div><span>ASSESSMENT INTEGRITY</span><h2 id="quality-title">ASSESSMENT QUALITY</h2></div></div>
+          <div class="signal-grid">
+            <article class="confidence-panel" data-section="confidence" data-state="loading" aria-labelledby="confidence-title">
+              <div class="subsystem-head"><div><span>DATA COVERAGE</span><h3 id="confidence-title">DATA CONFIDENCE</h3></div><strong data-confidence>—</strong></div>
+              <div class="coverage-track" aria-hidden="true"><i data-confidence-bar></i></div>
+              <p data-confidence-reason>AWAITING CONFIDENCE DETAIL</p>
+              <dl><div><dt>CHANNELS PRESENT</dt><dd data-channels-present>—</dd></div><div><dt>CHANNELS MISSING</dt><dd data-channels-missing>—</dd></div></dl>
+            </article>
+            <article class="ml-panel" data-section="ml" data-state="loading" aria-labelledby="ml-title">
+              <div class="subsystem-head"><div><span>OPTIONAL ADDITIVE TERM</span><h3 id="ml-title">ML ANOMALY SIGNAL</h3></div><span class="state-label" data-ml-status>LOADING</span></div>
+              <p class="ml-message" data-ml-message>AWAITING ANOMALY RESULT</p>
+              <dl><div><dt>MODEL</dt><dd data-ml-model>—</dd></div><div><dt>IS ANOMALY</dt><dd data-ml-anomaly>—</dd></div><div><dt>RAW SCORE</dt><dd data-ml-score>—</dd></div><div><dt>CONTRIBUTION</dt><dd data-ml-contribution>—</dd></div></dl>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel recommendation-panel" data-section="recommendation" data-state="loading" aria-labelledby="recommendation-title">
+          <div class="panel-head"><div><span>RISK EVIDENCE → CONTROLLED RESPONSE</span><h2 id="recommendation-title">RECOMMENDED ACTION</h2></div><span class="state-label" data-recommendation-state>LOADING</span></div>
+          <div class="recommendation-flow">
+            <div class="recommendation-action"><span>BACKEND RECOMMENDATION</span><strong data-recommendation>AWAITING RECOMMENDATION</strong></div>
+            <i aria-hidden="true">↓</i>
+            <div class="sop-record"><span>SOP PROVENANCE</span><dl><div><dt>DOCUMENT</dt><dd data-sop-doc>—</dd></div><div><dt>TITLE</dt><dd data-sop-title>—</dd></div><div><dt>SECTION</dt><dd data-sop-section>—</dd></div><div><dt>VERSION</dt><dd data-sop-version>—</dd></div></dl><p data-sop-source hidden></p></div>
+            <i aria-hidden="true">↓</i>
+            <div class="validator-gate" data-validator-state="unknown"><span>SAFETY VALIDATOR</span><strong data-validation>UNRESOLVED</strong><small data-rule>RULE NOT RETURNED</small></div>
+          </div>
+        </section>
+
+        <section class="panel human-actions-panel" data-section="actions" data-state="identity" aria-labelledby="actions-title">
+          <div class="panel-head"><div><span>VALIDATOR → HUMAN DECISION</span><h2 id="actions-title">HUMAN SAFETY ACTIONS</h2></div><span class="state-label" data-action-panel-state>SELECT A VALID USER</span></div>
+          <div class="action-intro"><p>Actions record a human workflow decision through the backend. They do not alter telemetry, repair equipment, or lower live risk.</p><span data-assignment-awareness>ASSIGNMENT AUTHORIZATION REMAINS BACKEND-ENFORCED</span></div>
+          <div class="action-register">
+            <div class="action-control" data-action-control="ASSIGN"><button type="button" data-workflow-action="ASSIGN" disabled>ASSIGN INSPECTION</button><small data-action-reason="ASSIGN">Select a valid user</small></div>
+            <div class="action-control" data-action-control="ACK"><button type="button" data-workflow-action="ACK" disabled>ACKNOWLEDGE RISK</button><small data-action-reason="ACK">Select a valid user</small></div>
+            <div class="action-control" data-action-control="DISMISS"><button type="button" data-workflow-action="DISMISS" disabled>DISMISS ISSUE</button><small data-action-reason="DISMISS">Select a valid user</small></div>
+            <div class="action-control" data-action-control="RESOLVE"><button type="button" data-workflow-action="RESOLVE" disabled>RESOLVE INSPECTION</button><small data-action-reason="RESOLVE">Select a valid user</small></div>
+          </div>
+          <form class="action-confirmation" data-action-form hidden novalidate>
+            <div class="form-heading"><span>EXPLICIT CONFIRMATION</span><strong data-action-form-title>CONFIRM HUMAN ACTION</strong></div>
+            <label data-assignee-field hidden><span>INSPECTOR</span><select data-assignee aria-describedby="assignee-help"><option value="">SELECT BACKEND-RETURNED INSPECTOR</option></select><small id="assignee-help">Inspector identities are loaded from GET /api/users.</small></label>
+            <label><span data-action-note-label>REASON / NOTE</span><textarea data-action-reason-input rows="3" required aria-describedby="action-note-help action-form-error"></textarea><small id="action-note-help">Required by the frozen human-action request contract. No default reason is supplied.</small></label>
+            <div class="form-actions"><button class="confirm-action" type="submit" data-action-submit>CONFIRM ACTION</button><button type="button" data-action-cancel>CANCEL</button></div>
+            <p class="form-error" id="action-form-error" data-action-form-error role="alert"></p>
+          </form>
+          <div class="action-result" data-action-result role="status" aria-live="polite">NO HUMAN ACTION SUBMITTED</div>
+        </section>
+
+      </aside>
+    </div>
+
+    <section class="lower-wide" aria-label="Dependency and intervention context">
+      <section class="panel simulation-panel" data-section="simulation" data-state="blocked" aria-labelledby="simulation-title">
+          <div class="panel-head"><div><span>HUMAN DECISION → WHAT-IF ANALYSIS</span><h2 id="simulation-title">SCENARIO SIMULATION</h2></div><span class="state-label" data-simulation-panel-state>CONTRACT BLOCKED</span></div>
+          <div class="simulation-disclaimer"><strong>HYPOTHETICAL ENGINEERING SCENARIO</strong><p>This computation does not actuate machinery, change live telemetry, or guarantee a physical outcome.</p></div>
+          <div class="scenario-comparison" data-scenario-comparison aria-live="polite">
+            <article><span>BEFORE / LIVE INPUT SNAPSHOT</span><strong data-sim-before-score>—</strong><b data-sim-before-level>UNAVAILABLE</b><small>PRIORITY / <i data-sim-before-priority>—</i></small></article>
+            <div class="scenario-process"><span>↓</span><strong data-sim-intervention>INTERVENTION VALUE UNVERIFIED</strong><span>↓</span></div>
+            <article><span>AFTER / HYPOTHETICAL RESULT</span><strong data-sim-after-score>—</strong><b data-sim-after-level>UNAVAILABLE</b><small>PRIORITY / <i data-sim-after-priority>—</i></small></article>
+          </div>
+          <div class="scenario-manifest"><div><span>CHANGED FACTORS</span><div data-sim-changed-factors>NO BACKEND SCENARIO RETURNED</div></div><div><span>BACKEND NOTE</span><p data-sim-note>NO BACKEND SCENARIO RETURNED</p></div></div>
+          <div class="simulation-control"><button type="button" data-simulate-intervention disabled>SIMULATE INTERVENTION</button><p data-simulation-support>VALID INTERVENTION VALUES ARE NOT DEFINED PER ASSET. REQUEST DISABLED TO PREVENT A FABRICATED PAYLOAD.</p></div>
+      </section>
+
+      <section class="panel dependency-panel" data-section="dependency" data-state="loading" aria-labelledby="dependency-title">
+          <div class="panel-head"><div><span>PROCESS CONTEXT / API TOPOLOGY</span><h2 id="dependency-title">CONNECTED / DOWNSTREAM ASSETS</h2></div><strong data-dependency-count>—</strong></div>
+          <p data-dependency-impact>AWAITING DEPENDENCY ASSESSMENT</p>
+          <div class="dependency-conduit" data-dependencies><span class="empty-copy">AWAITING DOWNSTREAM DATA</span></div>
+          <a class="plant-link" href="plant-map.html">OPEN PLANT MAP →</a>
+      </section>
+    </section>
+
+  </main>
+  <script src="routes.js"></script>
+  <script src="api.js"></script>
+  <script src="asset-safety-case.js"></script>
+</body>
+</html>

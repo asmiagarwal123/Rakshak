@@ -1,8 +1,155 @@
 <!doctype html>
-<html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>RAKSHAK — Command Center</title><link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" /><link rel="stylesheet" href="./command-center.css" /></head>
-<body><header class="app-header"><a class="brand" href="./index.html"><span>R</span> RAKSHAK</a><div class="header-state"><i></i> LIVE PLANT MONITORING</div><nav aria-label="Operational pages"><a class="active" href="./command-center.html">COMMAND CENTER</a><a href="asset-safety-case.html" data-route="safetyCase">ASSET SAFETY CASE</a><a href="#" data-pending="PLANT MAP">PLANT MAP</a><a href="#" data-pending="AUDIT HISTORY">AUDIT HISTORY</a></nav><span class="nav-status" role="status"></span></header>
-<main class="command-shell"><section class="page-intro"><div><p class="kicker">LIVE PLANT RISK OVERVIEW</p><h1>COMMAND CENTER</h1><p class="intro-copy">Operational visibility across monitored assets, current risk state, trajectory, and inspection priority.</p></div><div class="plant-state"><span>PLANT STATUS</span><strong data-plant-status>AWAITING LIVE DATA</strong><small data-plant-count>—</small></div></section>
-<section class="asset-section"><div class="section-head"><h2>ASSET INSTRUMENTS</h2><span data-assets-state>AWAITING ASSET DATA</span></div><div class="asset-grid" data-assets><div class="loading-block">AWAITING ASSET DATA</div></div></section>
-<section class="dashboard-grid"><section class="trajectory panel"><div class="panel-head"><div><h2>TEMPERATURE TRAJECTORY</h2><span data-selected-asset>AWAITING SELECTION</span></div><span data-telemetry-state>AWAITING TELEMETRY</span></div><div class="chart-wrap"><svg class="trajectory-chart" viewBox="0 0 800 300" role="img" aria-label="Temperature trajectory chart"><g class="chart-grid"><path d="M50 35H770M50 105H770M50 175H770M50 245H770" /><path d="M50 35V245M230 35V245M410 35V245M590 35V245M770 35V245" /></g><g class="thresholds"><line class="threshold-normal" x1="50" x2="770" y1="175" y2="175" /><line class="threshold-warning" x1="50" x2="770" y1="119" y2="119" /><line class="threshold-unsafe" x1="50" x2="770" y1="35" y2="35" /></g><path class="trajectory-line" data-trajectory-line d="" /><g data-chart-points></g><g class="chart-labels"><text x="12" y="179">30°C</text><text x="12" y="123">38°C</text><text x="12" y="39">45°C</text><text x="52" y="270">—</text><text x="746" y="270">NOW</text></g></svg></div><div class="chart-legend"><span><i class="cyan"></i> TEMPERATURE</span><span><i class="green"></i> NORMAL &lt;30</span><span><i class="amber"></i> WARNING / UNSAFE</span></div></section>
-<section class="priority panel"><div class="panel-head"><h2>INSPECTION PRIORITY</h2><span data-priority-state>AWAITING PRIORITY DATA</span></div><div class="priority-table" data-priority-table><div class="loading-block">AWAITING PRIORITY DATA</div></div></section></section>
-<section class="alerts panel"><div class="panel-head"><h2>RECENT ALERTS</h2><span data-audit-state>AWAITING AUDIT DATA</span></div><div class="alert-list" data-alerts><div class="loading-block">AWAITING AUDIT DATA</div></div></section></main><script src="./routes.js"></script><script src="./api.js"></script><script src="./command-center.js"></script></body></html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RAKSHAK / RiskRadar — Command Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./command-center.css" />
+  <link rel="stylesheet" href="./command-center-shell.css" />
+</head>
+<body data-telemetry-freshness="unknown">
+  <header class="app-header">
+    <a class="brand" href="./index.html"><span>R</span> RAKSHAK <small>/ RISKRADAR</small></a>
+    <div class="header-state" data-system-state data-ui-state="loading" role="status" aria-live="polite"><i aria-hidden="true"></i><span data-header-system-status>AWAITING SYSTEM STATUS</span></div>
+    <nav aria-label="Operational pages">
+      <a class="active" href="./command-center.html">COMMAND CENTER</a>
+      <a href="asset-safety-case.html" data-route="safetyCase">ASSET SAFETY CASE</a>
+      <a href="plant-map.html" data-route="plantMap">PLANT MAP</a>
+      <a href="audit-history.html" data-route="auditHistory">AUDIT HISTORY</a>
+    </nav>
+    <div class="role-picker" data-role-picker data-state="loading">
+      <label>
+        <span>ACTIVE IDENTITY</span>
+        <select data-role-picker-select aria-label="Select active prototype identity" disabled>
+          <option value="">AWAITING USER DATA</option>
+        </select>
+      </label>
+      <small data-role-picker-state aria-live="polite">IDENTITY REQUIRED</small>
+    </div>
+    <span class="nav-status" role="status"></span>
+  </header>
+
+  <main class="command-shell" data-command-center>
+    <section class="page-intro" aria-labelledby="command-center-title">
+      <div>
+        <p class="kicker">PLANT-WIDE OPERATIONAL OVERVIEW</p>
+        <h1 id="command-center-title">COMMAND CENTER</h1>
+        <p class="intro-copy">Operational visibility across monitored assets, current risk state, trajectory, inspection priority, and recent activity.</p>
+      </div>
+      <div class="runtime-rail" aria-label="Command Center runtime context">
+        <div class="runtime-channel" data-ui-state="loading"><span>ASSET DATA</span><strong data-plant-status>AWAITING ASSET DATA</strong><small data-plant-count>—</small></div>
+        <div class="runtime-channel" data-ui-state="empty"><span>SELECTED ASSET</span><strong data-selected-asset>AWAITING SELECTION</strong><small data-selected-location>—</small></div>
+        <section class="system-cluster" data-health-cluster data-ui-state="loading" aria-label="RiskRadar system status" aria-live="polite">
+          <div class="system-readout" data-health-readout="status"><span>SYSTEM</span><strong data-health-status>AWAITING</strong><small>BACKEND STATUS</small></div>
+          <div class="system-readout" data-health-readout="mode"><span>SOURCE</span><strong data-health-mode>AWAITING</strong><small>TELEMETRY MODE</small></div>
+          <div class="system-readout" data-health-readout="hardware"><span>HARDWARE</span><strong data-health-hardware>AWAITING</strong><small>ESP32 CONNECTION</small></div>
+          <div class="system-readout" data-health-readout="telemetry"><span>TELEMETRY</span><strong data-health-telemetry>AWAITING</strong><small>BACKEND FRESHNESS</small></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="control-console" aria-label="RAKSHAK industrial command console">
+      <header class="console-header"><span>RISKRADAR / OPERATIONS CONSOLE</span><span>REQUEST → RECEIVE → RENDER → INTERACT</span></header>
+      <section class="demo-reliability" data-demo-controls data-state="locked" aria-labelledby="demo-reliability-title">
+        <div><span>ADMIN-ONLY BACKEND COMMANDS</span><strong id="demo-reliability-title">DEMO RELIABILITY</strong></div>
+        <div class="demo-actions" role="group" aria-label="Backend demo reliability commands">
+          <button type="button" data-demo-command="reset" disabled>DEMO RESET</button>
+          <button type="button" data-demo-command="escalate" disabled>DEMO ESCALATE</button>
+          <button type="button" data-demo-command="resolve" disabled>DEMO RESOLVE</button>
+        </div>
+        <span data-demo-status role="status" aria-live="polite">SELECT ADMIN IDENTITY</span>
+      </section>
+
+      <section class="asset-section console-bay" aria-labelledby="asset-instruments-title" data-ui-state="loading">
+        <div class="section-head"><div><span>PRIMARY RISK STATE</span><h2 id="asset-instruments-title">ASSET INSTRUMENTATION</h2></div><span data-assets-state>AWAITING ASSET DATA</span></div>
+        <div class="asset-grid" data-assets><div class="technical-state"><i aria-hidden="true"></i><strong>AWAITING ASSET DATA</strong><small>INSTRUMENT MOUNTS READY</small></div></div>
+      </section>
+
+      <section class="dashboard-grid" aria-label="Selected asset, trajectory, and inspection priority">
+        <section class="trajectory panel console-bay" aria-labelledby="trajectory-title" data-ui-state="empty" data-plot-state="selection" data-telemetry-freshness="unknown">
+          <div class="panel-head">
+            <div><span>SELECTED-ASSET THERMAL RECORDER</span><h2 id="trajectory-title">LOCAL THERMAL TRAJECTORY</h2></div>
+            <span data-telemetry-state role="status" aria-live="polite">AWAITING ASSET SELECTION</span>
+          </div>
+          <div class="selected-trajectory-layout">
+            <aside class="selected-asset-dock" aria-label="Selected asset summary">
+              <div class="unresolved-dial" data-selected-dial aria-hidden="true"><i></i><span>—</span></div>
+              <span>SELECTED ASSET</span>
+              <strong data-selected-name>AWAITING SELECTION</strong>
+              <small><b data-selected-id>—</b><b data-selected-location>—</b></small>
+              <dl><div><dt>RISK</dt><dd data-selected-risk>—</dd></div><div><dt>LEVEL</dt><dd data-selected-level>—</dd></div><div><dt>PRIORITY</dt><dd data-selected-priority>—</dd></div></dl>
+              <a class="selected-case-link" data-open-safety-case hidden>OPEN SAFETY CASE →</a>
+            </aside>
+            <div class="chart-zone">
+              <div class="thermal-recorder-head">
+                <div><span>LOCAL EQUIPMENT-ENVIRONMENT / ENCLOSURE THERMAL PROXY</span><strong data-trajectory-asset>AWAITING ASSET SELECTION</strong></div>
+                <div class="thermal-current"><span>CURRENT</span><strong data-current-temperature>—</strong><b>°C</b></div>
+              </div>
+              <div class="chart-wrap">
+                <svg class="trajectory-chart" viewBox="0 0 800 300" role="img" aria-labelledby="trajectory-chart-title trajectory-chart-description">
+                  <title id="trajectory-chart-title">Selected asset local thermal trajectory</title>
+                  <desc id="trajectory-chart-description">Industrial recorder plot reserved for backend-returned timestamps and temperatures. No synthetic data is displayed.</desc>
+                  <g class="chart-grid"><path d="M50 35H770M50 105H770M50 175H770M50 245H770" /><path d="M50 35V245M230 35V245M410 35V245M590 35V245M770 35V245" /></g>
+                  <path class="trajectory-line" data-trajectory-line d="" />
+                  <g data-chart-points></g>
+                  <g class="trajectory-axis" aria-hidden="true"><text x="50" y="278">TIME</text><text x="770" y="24" text-anchor="end">°C</text></g>
+                </svg>
+                <p class="chart-empty" data-chart-empty>AWAITING ASSET SELECTION</p>
+              </div>
+              <div class="trajectory-meta" aria-label="Trajectory integration status">
+                <span data-trajectory-freshness>BACKEND FRESHNESS / UNKNOWN</span>
+                <span data-trajectory-provenance>PROVENANCE / CONTRACT PENDING</span>
+                <span>THRESHOLDS / PENDING SHARED CONTRACT</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="priority panel console-bay" aria-labelledby="priority-title" data-ui-state="loading">
+          <div class="panel-head"><div><span>ATTENTION ORDER</span><h2 id="priority-title">INSPECTION PRIORITY</h2></div><span data-priority-state role="status" aria-live="polite">AWAITING PRIORITY DATA</span></div>
+          <div class="priority-table-shell" data-priority-table>
+            <table class="priority-table">
+              <caption>Assets in the inspection order returned by RiskRadar</caption>
+              <thead>
+                <tr><th scope="col">RANK</th><th scope="col">ASSET</th><th scope="col">RISK</th><th scope="col">LEVEL</th><th scope="col">TREND</th><th scope="col">PRIORITY</th></tr>
+              </thead>
+              <tbody data-priority-body>
+                <tr class="priority-state-row"><td colspan="6"><div class="technical-state"><i aria-hidden="true"></i><strong>AWAITING PRIORITY DATA</strong><small>BACKEND RANKING MOUNT READY</small></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section class="command-tertiary-grid" aria-label="Activity and Inspector Queue">
+        <section class="alerts activity-panel panel console-bay" aria-labelledby="alerts-title" data-ui-state="empty" data-activity-state="contract">
+          <div class="panel-head"><div><span>OPERATIONAL EVENT RECORDER</span><h2 id="alerts-title">RECENT ACTIVITY</h2></div><span data-activity-status role="status" aria-live="polite">AWAITING ALERT SOURCE</span></div>
+          <div class="activity-recorder">
+            <div class="activity-columns" aria-hidden="true"><span>TIME</span><span>ASSET</span><span>EVENT / STATE</span></div>
+            <ol class="activity-list" data-activity-list aria-label="Recent operational activity">
+              <li class="activity-state"><div class="technical-state compact"><i aria-hidden="true"></i><strong>AWAITING ALERT INTEGRATION</strong><small>NO AUTHORITATIVE ALERT SOURCE CONFIRMED</small></div></li>
+            </ol>
+          </div>
+        </section>
+        <section class="inspector-queue panel console-bay" aria-labelledby="inspector-queue-title" data-ui-state="empty" data-queue-state="selection">
+          <div class="panel-head"><div><span>ROLE-SPECIFIC WORK REGISTER</span><h2 id="inspector-queue-title">INSPECTOR QUEUE</h2></div><span data-assignments-state role="status" aria-live="polite">SELECT INSPECTOR IDENTITY</span></div>
+          <div class="queue-register" data-inspector-queue>
+            <div class="queue-columns" aria-hidden="true"><span>ASSET</span><span>ASSIGNMENT / STATUS</span></div>
+            <ol class="queue-list" data-assignment-list aria-label="Inspector assignments">
+              <li class="queue-state"><div class="technical-state compact"><i aria-hidden="true"></i><strong>SELECT INSPECTOR IDENTITY</strong><small>QUEUE USES THE ACTIVE BACKEND-PROVIDED ROLE</small></div></li>
+            </ol>
+          </div>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <script src="./routes.js"></script>
+  <script src="./api.js"></script>
+  <script src="./role-picker.js"></script>
+  <script src="./command-center.js"></script>
+</body>
+</html>
